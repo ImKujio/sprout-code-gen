@@ -1,0 +1,41 @@
+.flex-rwo-fill{
+  display: flex;
+  flex-direction: row;
+  flex: 1;
+}
+
+.flex-col-fill{
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+:root {
+  font-family: Sarasa Gothic SC;
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 400;
+
+  color: #0f0f0f;
+  background-color: #ffffff;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-text-size-adjust: 100%;
+
+  user-select: none;
+}
+
+html, body, #app {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
+.content{
+  width: 100%;
+  height: 100%;
+}
+

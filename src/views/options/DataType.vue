@@ -48,13 +48,14 @@
 
 <script setup>
 import {Minus, Plus} from "@element-plus/icons-vue";
-import {Option} from "../../../api/data.js";
+import {Option} from "../../api/data.js";
 import {onMounted, reactive, watch} from "vue";
 
 const dataTypes = reactive([])
 
 onMounted(async () => {
-  dataTypes.push(...await Option.DataType.get())
+  const d = await Option.DataType.get()
+  if (d != null) dataTypes.push(...d)
   watch(dataTypes, async (n) => await Option.DataType.set(n))
 })
 

@@ -1,0 +1,21 @@
+.el-tabs__nav-wrap::after {
+  background-color: transparent;
+}
+
+.el-tabs__header {
+  margin: 0;
+  width: max-content;
+}
+
+.el-tabs__item {
+  padding: 0 8px;
+  font-size: 1em;
+}
+
+.el-tabs__nav-wrap,.el-tabs__nav-scroll{
+  width: max-content;
+}
+.el-tabs{
+  width: max-content;
+  margin-top: 6px;
+}

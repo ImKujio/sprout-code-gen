@@ -14,8 +14,8 @@
 </template>
 
 <script setup>
-import DefColumns from "./defColumn.vue";
-import DataType from "./dataType.vue";
+import DefColumns from "./DefColumns.vue";
+import DataType from "./DataType.vue";
 import {ref} from "vue";
 const tab = ref('1')
 </script>

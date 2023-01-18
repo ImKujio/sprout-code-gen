@@ -62,16 +62,17 @@
 
 <script setup>
 import {Minus, Plus} from "@element-plus/icons-vue";
-import {Option} from "../../../api/data.js";
+import {Option} from "../../api/data.js";
 import {onMounted, reactive, ref, watch} from "vue";
 
 const hasPrimary = ref(false)
 const defCols = reactive([])
 
 onMounted(async () => {
-  defCols.push(...await Option.DefColumn.get())
+  const d = await Option.DefColumn.get()
+  if (d != null) defCols.push(...d)
   hasPrimary.value = defCols.find(c => c.primary) != null
-  watch(defCols,async (n) => await Option.DefColumn.set(n))
+  watch(defCols, async (n) => await Option.DefColumn.set(n))
 })
 
 function onAddTap(index) {

@@ -11,7 +11,7 @@
 
 <script setup>
 import {onMounted, ref, watch} from "vue";
-import {Template} from "../../../api/data.js";
+import {Template} from "../../api/data.js";
 
 import Codemirror from "codemirror-editor-vue3";
 // language
