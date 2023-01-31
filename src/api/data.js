@@ -1,11 +1,12 @@
 import {invoke} from "@tauri-apps/api/tauri";
 
-function getData(key) {
+
+function getData(key, raw) {
     return new Promise((resolve, reject) => {
         invoke("get_data", {key: key}).then(rst => {
-            console.log("getData:"+key,rst)
+            console.log("getData:" + key, rst)
             if (rst.ok) {
-                resolve(JSON.parse(rst.data))
+                !raw ? resolve(JSON.parse(rst.data)) : resolve(rst.data)
             } else {
                 reject(rst.msg)
             }
@@ -13,10 +14,10 @@ function getData(key) {
     })
 }
 
-function setData(key, val) {
+function setData(key, val, raw) {
     return new Promise((resolve, reject) => {
-        invoke("set_data", {key: key, val: JSON.stringify(val)}).then(rst => {
-            console.log("setData:"+key, {val, rst})
+        invoke("set_data", {key: key, val: !raw ? JSON.stringify(val) : val}).then(rst => {
+            console.log("setData:" + key, {val, rst})
             if (rst.ok) {
                 resolve()
             } else {
@@ -26,13 +27,32 @@ function setData(key, val) {
     })
 }
 
+function toJson(val) {
+    return JSON.stringify(val)
+}
+
+function toObj(val) {
+    return JSON.parse(val)
+}
+
 export const Template = {
-    Spring:{
+    Spring: {
         get() {
-            return getData("Template/Spring")
+            return getData("Template/Spring",true)
         },
         set(val) {
-            return setData("Template/Spring", val)
+            return setData("Template/Spring", val,true)
+        }
+    }
+}
+
+export const Mysql = {
+    Create: {
+        get() {
+            return getData("Mysql/Create")
+        },
+        set(val) {
+            return setData("Mysql/Create", val)
         }
     }
 }

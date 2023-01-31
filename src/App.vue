@@ -6,19 +6,22 @@
           style="flex: 1"
           default-active="0">
         <el-menu-item index="0" @click="onMenuTap(0)">
-          <span>模块列表</span>
+          <span>数据列表</span>
         </el-menu-item>
         <el-menu-item index="1" @click="onMenuTap(1)">
-          <span>Spring模板</span>
+          <span>Mysql模板</span>
         </el-menu-item>
         <el-menu-item index="2" @click="onMenuTap(2)">
-          <span>Page模板</span>
+          <span>Spring模板</span>
         </el-menu-item>
         <el-menu-item index="3" @click="onMenuTap(3)">
+          <span>Page模板</span>
+        </el-menu-item>
+        <el-menu-item index="4" @click="onMenuTap(4)">
           <span>生成配置</span>
         </el-menu-item>
         <div style="flex-grow: 1"></div>
-        <el-menu-item index="9" @click="onMenuTap(9)">
+        <el-menu-item index="9" @click="onMenuTap(5)">
           <span>设置</span>
         </el-menu-item>
       </el-menu>
@@ -48,7 +51,9 @@
         </div>
       </div>
       <div class="flex-col-fill" style="margin: 4px">
-        <modules :tabindex="tabIndex" v-if="page === 0"/>
+        <Entities v-if="page === 0"/>
+        <Mysql v-if="page === 1"/>
+        <PropType v-if="page === 4"/>
       </div>
     </div>
   </div>
@@ -59,10 +64,17 @@ import {reactive, ref} from "vue";
 import {appWindow} from "@tauri-apps/api/window";
 import {Dismiss24Regular, Maximize24Regular, Subtract24Regular} from "@vicons/fluent"
 import {Icon} from "@vicons/utils";
-import Modules from "./views/Modules.vue"
+import Entities from "./views/Entities.vue"
+import PropType from "./views/options/PropType.vue";
+import Mysql from "./views/mysql/Mysql.vue";
 
 const allTabs = [
-  ['模块列表']
+  ['数据列表'],
+  ['Create.sql'],
+  ['Entity'],
+  ['Component'],
+  ['属性类型'],
+  ['设置'],
 ]
 
 const page = ref(0)
@@ -70,6 +82,7 @@ const tabIndex = ref(0)
 const tabs = ref(allTabs[0])
 
 function onMenuTap(index) {
+  tabIndex.value = 0
   page.value = index
   tabs.value = allTabs[index]
 }

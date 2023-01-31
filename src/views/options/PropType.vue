@@ -1,6 +1,6 @@
 <template>
-  <div class="table">
-    <el-table :data="dataTypes">
+  <size-wrapper v-model:height="height">
+    <el-table :max-height="height" :data="types">
       <el-table-column align="center" label="序号" width="60">
         <template #default="scope">
           <span>{{ scope.$index + 1 }}</span>
@@ -21,14 +21,7 @@
           <el-input v-model="scope.row.sType"/>
         </template>
       </el-table-column>
-      <el-table-column align="center" width="80">
-        <template #header>
-          <el-button type="text" style="font-weight: bold" @click="onAddTap(0)">
-            <el-icon>
-              <Plus/>
-            </el-icon>
-            <span>添加</span></el-button>
-        </template>
+      <el-table-column label="操作 " align="center" width="80">
         <template #default="scope">
           <el-button size="small" circle @click="onAddTap(scope.$index + 1)">
             <el-icon>
@@ -42,32 +35,48 @@
           </el-button>
         </template>
       </el-table-column>
+      <template #empty>
+        <el-button type="text" style="font-weight: bold" @click="onAddTap(0)">
+          <el-icon>
+            <Plus/>
+          </el-icon>
+          <span>添加一行</span></el-button>
+      </template>
     </el-table>
-  </div>
+  </size-wrapper>
 </template>
 
 <script setup>
 import {Minus, Plus} from "@element-plus/icons-vue";
+import {onMounted, reactive, ref, watch} from "vue";
 import {Option} from "../../api/data.js";
-import {onMounted, reactive, watch} from "vue";
+import SizeWrapper from "../../components/SizeWrapper.vue";
 
-const dataTypes = reactive([])
+const height = ref(0)
+const types = reactive([])
+const newType = {
+  name: '',
+  fType: '',
+  sType: '',
+}
+
 
 onMounted(async () => {
   const d = await Option.DataType.get()
-  if (d != null) dataTypes.push(...d)
-  watch(dataTypes, async (n) => await Option.DataType.set(n))
+  if (d != null) types.push(...d)
+  watch(types, async (n) => await Option.DataType.set(n))
 })
 
 function onAddTap(index) {
-  dataTypes.splice(index, 0, {
-    name: '',
-    fType: '',
-    sType: '',
-  })
+  types.splice(index, 0, Object.assign({},newType))
 }
 
 function onDelTap(index) {
-  dataTypes.splice(index, 1)
+  types.splice(index, 1)
 }
+
 </script>
+
+<style scoped>
+
+</style>

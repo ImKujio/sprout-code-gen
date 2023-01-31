@@ -1,19 +1,19 @@
 <template>
-  <table-wrapper v-model:height="tHeight">
-    <el-table :max-height="tHeight" :data="modules">
+  <size-wrapper v-model:height="height">
+    <el-table :max-height="height" :data="entities">
       <el-table-column prop="date" label="Date" width="180"/>
       <el-table-column prop="name" label="Name" width="180"/>
       <el-table-column prop="address" label="Address"/>
     </el-table>
-  </table-wrapper>
+  </size-wrapper>
 </template>
 
 <script setup>
 import {reactive, ref} from "vue";
-import TableWrapper from "../components/TableWrapper.vue";
-const tHeight = ref(0)
+import SizeWrapper from "../components/SizeWrapper.vue";
+const height = ref(0)
 
-const modules = reactive([
+const entities = reactive([
   {
     date: '2016-05-02',
     name: 'Tom',
@@ -138,13 +138,5 @@ const modules = reactive([
 </script>
 
 <style lang="scss" scoped>
-.header {
-  display: flex;
-  margin: 12px 24px;
-  align-items: center;
 
-  #title {
-    font-weight: bold;
-  }
-}
 </style>
