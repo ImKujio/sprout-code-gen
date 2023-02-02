@@ -4,6 +4,8 @@ import { GlobalCmComponent } from "codemirror-editor-vue3";
 import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 import App from "./App.vue";
 
+import "./tools/date.js"
+
 import 'element-plus/dist/index.css'
 import "./style/comm.scss";
 import "./style/table.scss"

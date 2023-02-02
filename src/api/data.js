@@ -27,100 +27,41 @@ function setData(key, val, raw) {
 }
 
 export const Data = {
-    Mysql: {
-        Create: {
-            get() {
-                return getData("Mysql/Create",true)
-            },
-            set(val) {
-                return setData("Mysql/Create", val,true)
-            }
+    Modules:{
+        get() {
+            return getData("Modules")
+        },
+        set(val) {
+            return setData("Modules", val)
+        },
+        getInfo(id) {
+            return getData("Modules/"+id)
+        },
+        setInfo(id,val){
+            return setData("Modules/"+id,val)
         }
     },
-    Spring: {
-        Entity: {
-            get() {
-                return getData("Spring/Entity",true)
-            },
-            set(val) {
-                return setData("Spring/Entity", val,true)
-            }
+    Templates:{
+        get() {
+            return getData("Templates")
         },
-        Mapper: {
-            get() {
-                return getData("Spring/Mapper",true)
-            },
-            set(val) {
-                return setData("Spring/Mapper", val,true)
-            }
+        set(val) {
+            return setData("Templates", val)
         },
-        MapperXml: {
-            get() {
-                return getData("Spring/MapperXml",true)
-            },
-            set(val) {
-                return setData("Spring/MapperXml", val,true)
-            }
+        getInfo(id) {
+            return getData("Templates/"+id)
         },
-        Service: {
-            get() {
-                return getData("Spring/Service",true)
-            },
-            set(val) {
-                return setData("Spring/Service", val,true)
-            }
-        },
-        ServiceImpl: {
-            get() {
-                return getData("Spring/ServiceImpl",true)
-            },
-            set(val) {
-                return setData("Spring/ServiceImpl", val,true)
-            }
-        },
-        Controller: {
-            get() {
-                return getData("Spring/Controller",true)
-            },
-            set(val) {
-                return setData("Spring/Controller", val,true)
-            }
-        },
+        setInfo(id,val){
+            return setData("Templates/"+id,val)
+        }
     },
-    Page:{
-        Api: {
-            get() {
-                return getData("Page/Api",true)
-            },
-            set(val) {
-                return setData("Page/Api", val,true)
-            }
+    PropTypes:{
+        get() {
+            return getData("PropTypes")
         },
-        Component: {
-            get() {
-                return getData("Page/Component",true)
-            },
-            set(val) {
-                return setData("Page/Component", val,true)
-            }
-        },
+        set(val) {
+            return setData("PropTypes", val)
+        }
     },
-    Option: {
-        DefColumn: {
-            get() {
-                return getData("Options/DefColumn")
-            },
-            set(val) {
-                return setData("Options/DefColumn", val)
-            }
-        },
-        DataType: {
-            get() {
-                return getData("Options/DataType")
-            },
-            set(val) {
-                return setData("Options/DataType", val)
-            }
-        },
-    }
+
 }

@@ -1,85 +1,89 @@
 <template>
-  <size-wrapper v-model:height="height" v-model:width="width">
-    <el-table :max-height="height" :data="types">
-      <el-table-column align="center" label="序号" width="60">
-        <template #default="scope">
-          <span>{{ scope.$index + 1 }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column prop="name" label="名称" min-width="120">
-        <template #default="scope">
-          <el-input v-model="scope.row.name"/>
-        </template>
-      </el-table-column>
-      <el-table-column prop="fType" label="字段类型" min-width="120">
-        <template #default="scope">
-          <el-input v-model="scope.row.fType"/>
-        </template>
-      </el-table-column>
-      <el-table-column prop="sType" label="组件类型" min-width="120">
-        <template #default="scope">
-          <el-select v-model="scope.row.sType" placeholder="请选择组件类型">
-            <el-option v-for="item in sTypes"
-                       :label="item" :value="item"/>
-          </el-select>
-        </template>
-      </el-table-column>
-      <el-table-column label="操作 " align="center" width="80">
-        <template #default="scope">
-          <el-button size="small" circle @click="onAddTap(scope.$index + 1)">
-            <el-icon>
-              <Plus/>
-            </el-icon>
-          </el-button>
-          <el-button size="small" circle @click="onDelTap(scope.$index)">
-            <el-icon>
-              <Minus/>
-            </el-icon>
-          </el-button>
-        </template>
-      </el-table-column>
-      <template #empty>
-        <el-button type="text" style="font-weight: bold" @click="onAddTap(0)">
-          <el-icon>
-            <Plus/>
-          </el-icon>
-          <span>添加一行</span></el-button>
+  <div class="flex-col-fill">
+    <content-title>
+      <el-button type="primary" text style="font-weight: bold" @click="onAdd">新增
+      </el-button>
+      <el-button v-show="selected" type="danger" text style="margin-left: 4px" @click="onDel">删除
+      </el-button>
+    </content-title>
+
+    <size-wrapper v-model:height="height">
+      <el-table :max-height="height" :data="types" highlight-current-row @current-change="onSelect">
+        <el-table-column type="index" align="center" label="序号" width="60"/>
+        <el-table-column prop="name" label="名称"/>
+        <el-table-column prop="update" label="更新时间" width="200"/>
+      </el-table>
+    </size-wrapper>
+
+    <el-dialog v-model="dialog" title="添加模块" width="360">
+      <el-form ref="formRef" :model="form">
+        <el-form-item prop="name" label="名称" :rules="[
+            {required: true, message: '请输入模块名称', trigger: 'blur'}
+        ]">
+          <el-input v-model="form.name" clearable/>
+        </el-form-item>
+      </el-form>
+      <template #footer>
+      <span class="dialog-footer">
+        <el-button @click="dialog = false">取消</el-button>
+        <el-button type="primary" @click="onSubmit">
+          确定
+        </el-button>
+      </span>
       </template>
-    </el-table>
-  </size-wrapper>
+    </el-dialog>
+  </div>
 </template>
 
 <script setup>
-import {Minus, Plus} from "@element-plus/icons-vue";
 import {reactive, ref, watch} from "vue";
-import {Data} from "../api/data.js";
 import SizeWrapper from "../components/SizeWrapper.vue";
-import {sTypes} from "../comm/constant.js";
+import ContentTitle from "../components/ContentTitle.vue";
+import {Data} from "../api/data.js";
 
 const height = ref(0)
-const width = ref(0)
+
 const types = reactive([])
-const newType = {
-  name: '',
-  fType: '',
-  sType: '',
+const dialog = ref(false)
+const selected = ref(null)
+const form = reactive({})
+const formRef = ref(null)
+
+function initForm(){
+  form.name = null
+  form.update = null
 }
 
-Data.Option.DataType.get().then(res => {
+Data.PropTypes.get().then(res => {
   if (res != null) types.push(...res)
-  watch(types, async (n) => await Data.Option.DataType.set(n))
+  watch(types, async n => {
+    await Data.PropTypes.set(types)
+  })
 })
 
-function onAddTap(index) {
-  types.splice(index, 0, Object.assign({}, newType))
+async function onSubmit() {
+  await formRef.value.validate(valid => {
+    if (!valid) return
+    form.update = new Date().format("yy-MM-dd hh:mm:ss")
+    types.push(Object.assign({},form))
+    dialog.value = false
+  })
 }
 
-function onDelTap(index) {
-  types.splice(index, 1)
+function onSelect(val) {
+  selected.value = val
 }
 
+function onAdd() {
+  initForm()
+  dialog.value = true
+}
+
+function onDel() {
+  types.splice(types.indexOf(selected.value), 1)
+}
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 
 </style>

@@ -10,16 +10,19 @@
           <span>模块列表</span>
         </el-menu-item>
         <el-menu-item index="1">
-          <span>模板列表</span>
+          <span>编辑模块</span>
         </el-menu-item>
         <el-menu-item index="2">
-          <span>模板编辑</span>
+          <span>模板列表</span>
         </el-menu-item>
         <el-menu-item index="3">
-          <span>生成配置</span>
+          <span>模板编辑</span>
+        </el-menu-item>
+        <el-menu-item index="4">
+          <span>数据类型</span>
         </el-menu-item>
         <div style="flex-grow: 1"></div>
-        <el-menu-item index="4">
+        <el-menu-item index="5">
           <span>设置</span>
         </el-menu-item>
       </el-menu>
@@ -52,12 +55,12 @@
 </template>
 
 <script setup>
-
 import {ref} from "vue";
 import {appWindow} from "@tauri-apps/api/window";
 import {Dismiss24Regular, Maximize24Regular, Subtract24Regular} from "@vicons/fluent"
 import {Icon} from "@vicons/utils";
 import Modules from "./views/Modules.vue"
+import ModEditor from "./views/ModEditor.vue"
 import PropType from "./views/PropType.vue";
 import Templates from "./views/Templates.vue";
 import Setting from "./views/Setting.vue";
@@ -66,10 +69,11 @@ import TemEditor from "./views/TemEditor.vue";
 const index = ref(0)
 const pages = [
   Modules,
-  PropType,
+  ModEditor,
   Templates,
-  Setting,
   TemEditor,
+  PropType,
+  Setting,
 ]
 
 

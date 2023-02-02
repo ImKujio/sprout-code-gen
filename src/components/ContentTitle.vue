@@ -1,6 +1,8 @@
 <template>
-  <div ref="dragging" data-tauri-drag-region style="width:100%;padding-top: 12px;padding-bottom: 8px">
-    <slot></slot>
+  <div ref="dragging" data-tauri-drag-region style="width:100%;padding-top: 8px;padding-bottom: 8px;padding-right: 140px">
+    <div >
+      <slot></slot>
+    </div>
   </div>
 </template>
 
@@ -16,12 +18,13 @@ onMounted(() => {
 })
 
 onUnmounted(() => {
+  if (dragging.value == null) return
   dragging.value.removeEventListener("mousedown", startDragging);
 })
 
+const noDragSelector = "input, a, button";
 async function startDragging(e) {
-  console.log(e.target)
-  if (!e.target.closest("div")) return;
+  if (e.target.closest(noDragSelector)) return;
   await appWindow.startDragging();
 }
 </script>
