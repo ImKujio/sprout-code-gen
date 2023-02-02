@@ -1,5 +1,5 @@
 <template>
-  <size-wrapper v-model:height="height">
+  <size-wrapper v-model:height="height" v-model:width="width">
     <el-table :max-height="height" :data="types">
       <el-table-column align="center" label="序号" width="60">
         <template #default="scope">
@@ -18,7 +18,10 @@
       </el-table-column>
       <el-table-column prop="sType" label="组件类型" min-width="120">
         <template #default="scope">
-          <el-input v-model="scope.row.sType"/>
+          <el-select v-model="scope.row.sType" placeholder="请选择组件类型">
+            <el-option v-for="item in sTypes"
+                       :label="item" :value="item"/>
+          </el-select>
         </template>
       </el-table-column>
       <el-table-column label="操作 " align="center" width="80">
@@ -48,11 +51,13 @@
 
 <script setup>
 import {Minus, Plus} from "@element-plus/icons-vue";
-import {onMounted, reactive, ref, watch} from "vue";
-import {Option} from "../../api/data.js";
-import SizeWrapper from "../../components/SizeWrapper.vue";
+import {reactive, ref, watch} from "vue";
+import {Data} from "../api/data.js";
+import SizeWrapper from "../components/SizeWrapper.vue";
+import {sTypes} from "../comm/constant.js";
 
 const height = ref(0)
+const width = ref(0)
 const types = reactive([])
 const newType = {
   name: '',
@@ -60,15 +65,13 @@ const newType = {
   sType: '',
 }
 
-
-onMounted(async () => {
-  const d = await Option.DataType.get()
-  if (d != null) types.push(...d)
-  watch(types, async (n) => await Option.DataType.set(n))
+Data.Option.DataType.get().then(res => {
+  if (res != null) types.push(...res)
+  watch(types, async (n) => await Data.Option.DataType.set(n))
 })
 
 function onAddTap(index) {
-  types.splice(index, 0, Object.assign({},newType))
+  types.splice(index, 0, Object.assign({}, newType))
 }
 
 function onDelTap(index) {

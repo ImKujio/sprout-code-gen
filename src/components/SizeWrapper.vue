@@ -1,6 +1,8 @@
 <template>
-  <div ref="wrapper" class="flex-col-fill">
-    <slot></slot>
+  <div ref="wrapper" style="flex: 1;position: relative">
+    <div style="position: absolute;width: 100%;height: 100%">
+      <slot></slot>
+    </div>
   </div>
 </template>
 

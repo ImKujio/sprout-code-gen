@@ -1,6 +1,5 @@
 import {invoke} from "@tauri-apps/api/tauri";
 
-
 function getData(key, raw) {
     return new Promise((resolve, reject) => {
         invoke("get_data", {key: key}).then(rst => {
@@ -27,51 +26,101 @@ function setData(key, val, raw) {
     })
 }
 
-function toJson(val) {
-    return JSON.stringify(val)
-}
-
-function toObj(val) {
-    return JSON.parse(val)
-}
-
-export const Template = {
+export const Data = {
+    Mysql: {
+        Create: {
+            get() {
+                return getData("Mysql/Create",true)
+            },
+            set(val) {
+                return setData("Mysql/Create", val,true)
+            }
+        }
+    },
     Spring: {
-        get() {
-            return getData("Template/Spring",true)
+        Entity: {
+            get() {
+                return getData("Spring/Entity",true)
+            },
+            set(val) {
+                return setData("Spring/Entity", val,true)
+            }
         },
-        set(val) {
-            return setData("Template/Spring", val,true)
-        }
-    }
-}
-
-export const Mysql = {
-    Create: {
-        get() {
-            return getData("Mysql/Create")
+        Mapper: {
+            get() {
+                return getData("Spring/Mapper",true)
+            },
+            set(val) {
+                return setData("Spring/Mapper", val,true)
+            }
         },
-        set(val) {
-            return setData("Mysql/Create", val)
-        }
-    }
-}
-
-export const Option = {
-    DefColumn: {
-        get() {
-            return getData("Options/DefColumn")
+        MapperXml: {
+            get() {
+                return getData("Spring/MapperXml",true)
+            },
+            set(val) {
+                return setData("Spring/MapperXml", val,true)
+            }
         },
-        set(val) {
-            return setData("Options/DefColumn", val)
-        }
+        Service: {
+            get() {
+                return getData("Spring/Service",true)
+            },
+            set(val) {
+                return setData("Spring/Service", val,true)
+            }
+        },
+        ServiceImpl: {
+            get() {
+                return getData("Spring/ServiceImpl",true)
+            },
+            set(val) {
+                return setData("Spring/ServiceImpl", val,true)
+            }
+        },
+        Controller: {
+            get() {
+                return getData("Spring/Controller",true)
+            },
+            set(val) {
+                return setData("Spring/Controller", val,true)
+            }
+        },
     },
-    DataType: {
-        get() {
-            return getData("Options/DataType")
+    Page:{
+        Api: {
+            get() {
+                return getData("Page/Api",true)
+            },
+            set(val) {
+                return setData("Page/Api", val,true)
+            }
         },
-        set(val) {
-            return setData("Options/DataType", val)
-        }
+        Component: {
+            get() {
+                return getData("Page/Component",true)
+            },
+            set(val) {
+                return setData("Page/Component", val,true)
+            }
+        },
     },
+    Option: {
+        DefColumn: {
+            get() {
+                return getData("Options/DefColumn")
+            },
+            set(val) {
+                return setData("Options/DefColumn", val)
+            }
+        },
+        DataType: {
+            get() {
+                return getData("Options/DataType")
+            },
+            set(val) {
+                return setData("Options/DataType", val)
+            }
+        },
+    }
 }

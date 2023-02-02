@@ -1,91 +1,78 @@
 <template>
   <div class="flex-rwo-fill">
     <div class="flex-col-fill" style="width: auto;flex: none">
-      <img src="/logo.svg" class="logo" alt="logo"/>
+      <img data-tauri-drag-region src="/logo.svg" class="logo" alt="logo"/>
       <el-menu
           style="flex: 1"
-          default-active="0">
-        <el-menu-item index="0" @click="onMenuTap(0)">
-          <span>数据列表</span>
+          default-active="0"
+          @select="i => index = parseInt(i)">
+        <el-menu-item index="0">
+          <span>模块列表</span>
         </el-menu-item>
-        <el-menu-item index="1" @click="onMenuTap(1)">
-          <span>Mysql模板</span>
+        <el-menu-item index="1">
+          <span>模板列表</span>
         </el-menu-item>
-        <el-menu-item index="2" @click="onMenuTap(2)">
-          <span>Spring模板</span>
+        <el-menu-item index="2">
+          <span>模板编辑</span>
         </el-menu-item>
-        <el-menu-item index="3" @click="onMenuTap(3)">
-          <span>Page模板</span>
-        </el-menu-item>
-        <el-menu-item index="4" @click="onMenuTap(4)">
+        <el-menu-item index="3">
           <span>生成配置</span>
         </el-menu-item>
         <div style="flex-grow: 1"></div>
-        <el-menu-item index="9" @click="onMenuTap(5)">
+        <el-menu-item index="4">
           <span>设置</span>
         </el-menu-item>
       </el-menu>
     </div>
 
     <div class="flex-col-fill" style="margin-left: 8px;">
-      <div data-tauri-drag-region id="title">
-        <el-tabs v-model="tabIndex" style="margin-left: 4px">
-          <el-tab-pane v-for="(item,index) in tabs" :label="item" :name="index"/>
-        </el-tabs>
-        <div id="window-actions">
-          <el-button size="small" text @click="appWindow.minimize()">
-            <icon size="18">
-              <subtract24-regular/>
-            </icon>
-          </el-button>
-          <el-button size="small" text @click="appWindow.toggleMaximize()">
-            <icon size="18">
-              <maximize24-regular/>
-            </icon>
-          </el-button>
-          <el-button size="small" text @click="appWindow.close()">
-            <icon size="18">
-              <dismiss24-regular/>
-            </icon>
-          </el-button>
-        </div>
-      </div>
-      <div class="flex-col-fill" style="margin: 4px">
-        <Entities v-if="page === 0"/>
-        <Mysql v-if="page === 1"/>
-        <PropType v-if="page === 4"/>
-      </div>
+      <KeepAlive>
+        <component :is="pages[index]"/>
+      </KeepAlive>
+    </div>
+
+    <div id="window-actions">
+      <el-button size="small" text @click="appWindow.minimize()">
+        <icon size="18">
+          <subtract24-regular/>
+        </icon>
+      </el-button>
+      <el-button size="small" text @click="appWindow.toggleMaximize()">
+        <icon size="18">
+          <maximize24-regular/>
+        </icon>
+      </el-button>
+      <el-button size="small" text @click="appWindow.close()">
+        <icon size="18">
+          <dismiss24-regular/>
+        </icon>
+      </el-button>
     </div>
   </div>
 </template>
 
 <script setup>
-import {reactive, ref} from "vue";
+
+import {ref} from "vue";
 import {appWindow} from "@tauri-apps/api/window";
 import {Dismiss24Regular, Maximize24Regular, Subtract24Regular} from "@vicons/fluent"
 import {Icon} from "@vicons/utils";
-import Entities from "./views/Entities.vue"
-import PropType from "./views/options/PropType.vue";
-import Mysql from "./views/mysql/Mysql.vue";
+import Modules from "./views/Modules.vue"
+import PropType from "./views/PropType.vue";
+import Templates from "./views/Templates.vue";
+import Setting from "./views/Setting.vue";
+import TemEditor from "./views/TemEditor.vue";
 
-const allTabs = [
-  ['数据列表'],
-  ['Create.sql'],
-  ['Entity'],
-  ['Component'],
-  ['属性类型'],
-  ['设置'],
+const index = ref(0)
+const pages = [
+  Modules,
+  PropType,
+  Templates,
+  Setting,
+  TemEditor,
 ]
 
-const page = ref(0)
-const tabIndex = ref(0)
-const tabs = ref(allTabs[0])
 
-function onMenuTap(index) {
-  tabIndex.value = 0
-  page.value = index
-  tabs.value = allTabs[index]
-}
 </script>
 
 <style lang="scss" scoped>
@@ -107,6 +94,7 @@ function onMenuTap(index) {
   right: 0;
   top: 0;
   padding: 2px;
+  z-index: 999;
 
   .el-button + .el-button {
     margin-left: 0;
