@@ -1,4 +1,4 @@
-.flex-rwo-fill{
+.flex-row-fill{
   display: flex;
   flex-direction: row;
   flex: 1;
@@ -39,3 +39,6 @@ html, body, #app {
   height: 100%;
 }
 
+.icon{
+  width: 1.4em; height: 1.4em;
+}

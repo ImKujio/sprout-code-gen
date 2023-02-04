@@ -1,6 +1,6 @@
 <template>
   <div ref="dragging" data-tauri-drag-region style="width:100%;padding-top: 8px;padding-bottom: 8px;padding-right: 140px">
-    <div >
+    <div style="display: flex;flex-direction:row">
       <slot></slot>
     </div>
   </div>

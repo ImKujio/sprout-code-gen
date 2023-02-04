@@ -1,5 +1,5 @@
 <template>
-  <div class="flex-rwo-fill">
+  <div class="flex-row-fill">
     <div class="flex-col-fill" style="width: auto;flex: none">
       <img data-tauri-drag-region src="/logo.svg" class="logo" alt="logo"/>
       <el-menu
@@ -10,19 +10,13 @@
           <span>模块列表</span>
         </el-menu-item>
         <el-menu-item index="1">
-          <span>编辑模块</span>
-        </el-menu-item>
-        <el-menu-item index="2">
           <span>模板列表</span>
         </el-menu-item>
-        <el-menu-item index="3">
-          <span>模板编辑</span>
-        </el-menu-item>
-        <el-menu-item index="4">
-          <span>数据类型</span>
+        <el-menu-item index="2">
+          <span>类属性列</span>
         </el-menu-item>
         <div style="flex-grow: 1"></div>
-        <el-menu-item index="5">
+        <el-menu-item index="3">
           <span>设置</span>
         </el-menu-item>
       </el-menu>
@@ -60,22 +54,17 @@ import {appWindow} from "@tauri-apps/api/window";
 import {Dismiss24Regular, Maximize24Regular, Subtract24Regular} from "@vicons/fluent"
 import {Icon} from "@vicons/utils";
 import Modules from "./views/Modules.vue"
-import ModEditor from "./views/ModEditor.vue"
-import PropType from "./views/PropType.vue";
+import PropColumns from "./views/PropColumns.vue";
 import Templates from "./views/Templates.vue";
 import Setting from "./views/Setting.vue";
-import TemEditor from "./views/TemEditor.vue";
 
 const index = ref(0)
 const pages = [
   Modules,
-  ModEditor,
   Templates,
-  TemEditor,
-  PropType,
+  PropColumns,
   Setting,
 ]
-
 
 </script>
 

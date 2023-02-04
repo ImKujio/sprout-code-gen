@@ -3,7 +3,7 @@ import {invoke} from "@tauri-apps/api/tauri";
 function getData(key, raw) {
     return new Promise((resolve, reject) => {
         invoke("get_data", {key: key}).then(rst => {
-            console.log("getData:" + key, rst)
+            console.log("getData:" + key, !raw ? JSON.parse(rst.data) : rst.data)
             if (rst.ok) {
                 !raw ? resolve(JSON.parse(rst.data)) : resolve(rst.data)
             } else {
@@ -27,7 +27,7 @@ function setData(key, val, raw) {
 }
 
 export const Data = {
-    Modules:{
+    Modules: {
         get() {
             return getData("Modules")
         },
@@ -35,13 +35,13 @@ export const Data = {
             return setData("Modules", val)
         },
         getInfo(id) {
-            return getData("Modules/"+id)
+            return getData("Modules/" + id)
         },
-        setInfo(id,val){
-            return setData("Modules/"+id,val)
+        setInfo(id, val) {
+            return setData("Modules/" + id, val)
         }
     },
-    Templates:{
+    Templates: {
         get() {
             return getData("Templates")
         },
@@ -49,13 +49,21 @@ export const Data = {
             return setData("Templates", val)
         },
         getInfo(id) {
-            return getData("Templates/"+id)
+            return getData("Templates/" + id,true)
         },
-        setInfo(id,val){
-            return setData("Templates/"+id,val)
+        setInfo(id, val) {
+            return setData("Templates/" + id, val,true)
         }
     },
-    PropTypes:{
+    PropColumns: {
+        get() {
+            return getData("PropColumns")
+        },
+        set(val) {
+            return setData("PropColumns", val)
+        }
+    },
+    PropTypes: {
         get() {
             return getData("PropTypes")
         },
