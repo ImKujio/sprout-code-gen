@@ -11,7 +11,6 @@ import "./style/comm.scss";
 import "./style/table.scss"
 import "./style/code_mirror.scss"
 import "./style/tabs.scss"
-import "./style/icons.css"
 
 const app = createApp(App)
 

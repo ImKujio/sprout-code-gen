@@ -76,8 +76,8 @@
         "height": 600,
         "resizable": true,
         "title": "ruoyi-gen",
-        "width": 900,
-        "minWidth": 900,
+        "width": 960,
+        "minWidth": 960,
         "minHeight": 600,
         "decorations": false
       }

@@ -12,9 +12,9 @@
             :label="item.name"
             :key="index"/>
       </el-select>
-      <el-button text :icon="Refresh"  style="margin-left: 4px" @click="onRefresh" :disabled="!preMod">刷新预览
+      <el-button text :icon="Refresh" style="margin-left: 4px" @click="onRefresh" :disabled="!preMod">刷新预览
       </el-button>
-      <el-button text :icon="Warning" style="margin-left: 4px" @click="onHelp" >查看帮助
+      <el-button text :icon="Warning" style="margin-left: 4px" @click="onHelp">查看帮助
       </el-button>
     </content-title>
     <div class="flex-row-fill">
@@ -26,14 +26,16 @@
 
 <script setup>
 import ContentTitle from "../components/ContentTitle.vue"
-import {Back,Refresh,Warning} from "@element-plus/icons-vue";
+import {Back, Refresh, Warning} from "@element-plus/icons-vue";
 import {Data} from "../api/data.js";
 import {ref, watch} from "vue";
 import CodeEditor from "../components/CodeEditor.vue";
+import {initRender, render} from "../api/template.js";
 
 const prop = defineProps(['temId', 'mode', 'temName'])
 const emit = defineEmits(['back', 'edited'])
 const preMod = ref(null)
+const preModInfo = ref(null)
 const modules = ref(null)
 const code = ref(null)
 const preview = ref(null)
@@ -44,13 +46,22 @@ Data.Modules.get().then(value => {
 
 Data.Templates.getInfo(prop.temId).then(value => {
   code.value = value
-  watch(code,async n => {
+  watch(code, async n => {
     await Data.Templates.setInfo(prop.temId, n)
   })
 })
 
+watch(preMod, async n => {
+  if (n == null) return
+  preModInfo.value = await Data.Modules.getInfo(n.id)
+})
+
+initRender()
 function onRefresh() {
-  preview.value = code.value
+  preview.value = render(code.value, {
+    module: preMod.value,
+    modProps: preModInfo.value
+  })
 }
 
 function onHelp() {

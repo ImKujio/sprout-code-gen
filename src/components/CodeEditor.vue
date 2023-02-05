@@ -58,6 +58,10 @@ function onChange(val) {
   emit("update:modelValue", val)
 }
 
+watch(width, n => {
+  console.log("code width:",n)
+})
+
 function getOptions() {
   if (!prop.readOnly) return { // 读写模式
     mode: prop.mode, // Language mode
@@ -83,21 +87,6 @@ function getOptions() {
     styleActiveLine: true, // Display the style of the selected row
     readOnly: true
   }
-}
-
-const cmOptions = {
-  mode: prop.mode, // Language mode
-  theme: "idea", // Theme
-  lineNumbers: true, // Show line number
-  smartIndent: true, // Smart indent
-  indentUnit: 2, // The smart indent unit is 2 spaces in length
-  foldGutter: true, // Code folding
-  lineWrapping: false,
-  gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter", "CodeMirror-lint-markers"],
-  styleActiveLine: true, // Display the style of the selected row
-  matchBrackets: true,// 括号匹配
-  extraKeys: {"Ctrl-Enter": "autocomplete"},//ctrl-space唤起智能提示
-  readOnly: prop.readOnly
 }
 
 </script>

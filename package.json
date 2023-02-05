@@ -14,6 +14,7 @@
     "@tauri-apps/api": "^1.2.0",
     "codemirror-editor-vue3": "^2.1.7",
     "element-plus": "^2.2.28",
+    "is-keyword-js": "^1.0.3",
     "path": "^0.12.7",
     "vue": "^3.2.45"
   },
