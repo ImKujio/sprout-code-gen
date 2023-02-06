@@ -84,7 +84,7 @@ import {Data} from "../api/data.js";
 
 const height = ref(0)
 
-const prop = defineProps(['modId'])
+const prop = defineProps(['clazzId'])
 const emit = defineEmits(['back', 'edited'])
 const modProps = reactive([])
 const columns = ref(null)
@@ -104,10 +104,10 @@ function initForm(val) {
   form.update = !val ? null : val.update
 }
 
-Data.Modules.getInfo(prop.modId).then(res => {
+Data.Classes.getInfo(prop.clazzId).then(res => {
   if (res != null) modProps.push(...res)
   watch(modProps, async n => {
-    await Data.Modules.setInfo(prop.modId, n)
+    await Data.Classes.setInfo(prop.clazzId, n)
   })
 })
 
@@ -127,7 +127,7 @@ async function onSubmit() {
       form.id = now.getTime()
       modProps.push(Object.assign({}, form))
     }
-    emit('edited', prop.modId)
+    emit('edited', prop.clazzId)
     dialog.value = false
   })
 }

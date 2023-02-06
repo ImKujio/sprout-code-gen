@@ -27,18 +27,18 @@ function setData(key, val, raw) {
 }
 
 export const Data = {
-    Modules: {
+    Classes: {
         get() {
-            return getData("Modules")
+            return getData("Classes")
         },
         set(val) {
-            return setData("Modules", val)
+            return setData("Classes", val)
         },
         getInfo(id) {
-            return getData("Modules/" + id)
+            return getData("Classes/" + id)
         },
         setInfo(id, val) {
-            return setData("Modules/" + id, val)
+            return setData("Classes/" + id, val)
         }
     },
     Templates: {
@@ -63,13 +63,12 @@ export const Data = {
             return setData("PropColumns", val)
         }
     },
-    PropTypes: {
+    ClassColumns:{
         get() {
-            return getData("PropTypes")
+            return getData("ClassColumns")
         },
         set(val) {
-            return setData("PropTypes", val)
+            return setData("ClassColumns", val)
         }
     },
-
 }

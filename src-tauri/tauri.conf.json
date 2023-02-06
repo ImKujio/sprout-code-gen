@@ -54,7 +54,7 @@
         "providerShortName": null,
         "signingIdentity": null
       },
-      "resources": [],
+      "resources": ["data.redb"],
       "shortDescription": "",
       "targets": "all",
       "windows": {

@@ -3,7 +3,7 @@
  */
 const artRule = {
     test: /{{([@#]?)[ \t]*(\/?)([\w\W]*?)[ \t]*}}/,
-    use: function(match, raw, close, code) {
+    use: function (match, raw, close, code) {
         const compiler = this;
         const options = compiler.options;
         const esTokens = compiler.getEsTokens(code);
@@ -18,7 +18,7 @@ const artRule = {
         const warn = (oldSyntax, newSyntax) => {
             console.warn(
                 `${options.filename || 'anonymous'}:${match.line + 1}:${match.start + 1}\n` +
-                    `Template upgrade: {{${oldSyntax}}} -> {{${newSyntax}}}`
+                `Template upgrade: {{${oldSyntax}}} -> {{${newSyntax}}}`
             );
         };
 
@@ -33,22 +33,25 @@ const artRule = {
                 break;
 
             case 'if':
-                code = `if(${values.join('').trim()}){`;
-
+                const inVal = values.join('').trim().split(" in ")
+                if (inVal.length !== 2)
+                    code = `if(${values.join('').trim()}){`;
+                else
+                    code = `if(${inVal[1].trim()}.indexOf(${inVal[0].trim()}) !== -1){`
                 break;
-
             case 'else':
                 const indexIf = values.indexOf('if');
-
                 if (~indexIf) {
                     values.splice(0, indexIf + 1);
-                    code = `}else if(${values.join('').trim()}){`;
+                    const inVal = values.join('').trim().split(" in ")
+                    if (inVal.length !== 2)
+                        code = `}else if(${values.join('').trim()}){`;
+                    else
+                        code = `}else if(${inVal[1].trim()}.indexOf(${inVal[0].trim()}) !== -1){`;
                 } else {
                     code = `}else{`;
                 }
-
                 break;
-
             case '/if':
                 code = '}';
                 break;
@@ -111,7 +114,7 @@ const artRule = {
                     // 将过滤器解析成二维数组
                     const group = esTokens
                         .reduce((group, token) => {
-                            const { value, type } = token;
+                            const {value, type} = token;
                             if (value === '|') {
                                 group.push([]);
                             } else if (type !== `whitespace` && type !== `comment`) {
@@ -157,7 +160,7 @@ const artRule = {
     // 支持基本运算、三元表达式、取值、运行函数，不支持 `typeof value` 操作
     // 只支持 string、number、boolean、null、undefined 这几种类型声明，不支持 function、object、array
     _split: esTokens => {
-        esTokens = esTokens.filter(({ type }) => {
+        esTokens = esTokens.filter(({type}) => {
             return type !== `whitespace` && type !== `comment`;
         });
 

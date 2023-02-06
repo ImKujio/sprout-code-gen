@@ -9,7 +9,7 @@ function proc(tem) {
             console.error("{{line}} tag is not close")
             return tem
         }
-        const line = s[0].replace(/(([ \t])*\n([ \t])*)+/g, " ").replace(/ {{/g,"{{").trim()
+        const line = s[0].replace(/(([ \t])*\n([ \t])*)+/g, " ").replace(/ {{/g, "{{").trim()
         arr.splice(i, 1, line + s[1])
     }
     return arr.join("")
@@ -20,7 +20,11 @@ function optimize(code) {
 }
 
 export function render(tem, obj) {
-    return optimize(artTemplate.render(proc(tem), obj))
+    try {
+        return optimize(artTemplate.render(proc(tem), obj))
+    } catch (e) {
+        return e.toString()
+    }
 }
 
 export function initRender() {
@@ -59,5 +63,10 @@ export function initRender() {
             }
         }
         return arr.join("")
+    }
+
+    artTemplate.defaults.imports.isIn = function (value) {
+        return true
+        // return array.split(",").indexOf(value) !== -1
     }
 }

@@ -40,7 +40,7 @@ const modules = ref(null)
 const code = ref(null)
 const preview = ref(null)
 
-Data.Modules.get().then(value => {
+Data.Classes.get().then(value => {
   modules.value = value
 })
 
@@ -53,14 +53,14 @@ Data.Templates.getInfo(prop.temId).then(value => {
 
 watch(preMod, async n => {
   if (n == null) return
-  preModInfo.value = await Data.Modules.getInfo(n.id)
+  preModInfo.value = await Data.Classes.getInfo(n.id)
 })
 
 initRender()
 function onRefresh() {
   preview.value = render(code.value, {
-    module: preMod.value,
-    modProps: preModInfo.value
+    clazz: preMod.value,
+    props: preModInfo.value
   })
 }
 

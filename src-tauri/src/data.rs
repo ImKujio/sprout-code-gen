@@ -4,10 +4,10 @@ use redb::{AccessGuard, Database, Error, ReadableTable, TableDefinition};
 
 const TB: TableDefinition<&str, &str> = TableDefinition::new("data");
 static DB: Lazy<Database> = Lazy::new(|| {
-    // let exe = env::current_exe().unwrap();
-    // let dir = exe.parent().unwrap();
-    let cur_dir = env::current_dir().unwrap();
-    let dir = cur_dir.parent().unwrap();
+    let exe = env::current_exe().unwrap();
+    let dir = exe.parent().unwrap();
+    // let cur_dir = env::current_dir().unwrap();
+    // let dir = cur_dir.parent().unwrap();
     let db = Database::create(dir.to_str().unwrap().to_owned() + "\\data.redb").unwrap();
     return db;
 });

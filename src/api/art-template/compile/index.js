@@ -82,6 +82,7 @@ const compile = (source, options = {}) => {
 
     try {
         fn = compiler.build();
+        console.log(fn)
     } catch (error) {
         error = new TemplateError(error);
         if (options.bail) {

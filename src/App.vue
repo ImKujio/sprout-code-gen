@@ -7,16 +7,19 @@
           default-active="0"
           @select="i => index = parseInt(i)">
         <el-menu-item index="0">
-          <span>模块列表</span>
+          <span>类信息</span>
         </el-menu-item>
         <el-menu-item index="1">
           <span>模板列表</span>
         </el-menu-item>
         <el-menu-item index="2">
+          <span>类信息列</span>
+        </el-menu-item>
+        <el-menu-item index="3">
           <span>类属性列</span>
         </el-menu-item>
         <div style="flex-grow: 1"></div>
-        <el-menu-item index="3">
+        <el-menu-item index="4">
           <span>设置</span>
         </el-menu-item>
       </el-menu>
@@ -53,15 +56,17 @@ import {ref} from "vue";
 import {appWindow} from "@tauri-apps/api/window";
 import {Dismiss24Regular, Maximize24Regular, Subtract24Regular} from "@vicons/fluent"
 import {Icon} from "@vicons/utils";
-import Modules from "./views/Modules.vue"
-import PropColumns from "./views/PropColumns.vue";
+import Classes from "./views/Classes.vue"
 import Templates from "./views/Templates.vue";
+import ClassColumns from "./views/ClassColumns.vue"
+import PropColumns from "./views/PropColumns.vue";
 import Setting from "./views/Setting.vue";
 
 const index = ref(0)
 const pages = [
-  Modules,
+  Classes,
   Templates,
+  ClassColumns,
   PropColumns,
   Setting,
 ]
