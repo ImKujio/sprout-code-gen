@@ -15,7 +15,7 @@
     "codemirror-editor-vue3": "^2.1.7",
     "element-plus": "^2.2.28",
     "is-keyword-js": "^1.0.3",
-    "path": "^0.12.7",
+    "tauri-plugin-store-api": "github:tauri-apps/tauri-plugin-store",
     "vue": "^3.2.45"
   },
   "devDependencies": {

@@ -27,7 +27,7 @@
 <script setup>
 import ContentTitle from "../components/ContentTitle.vue"
 import {Back, Refresh, Warning} from "@element-plus/icons-vue";
-import {Data} from "../api/data.js";
+import {Store} from "../api/store.js";
 import {ref, watch} from "vue";
 import CodeEditor from "../components/CodeEditor.vue";
 import {initRender, render} from "../api/template.js";
@@ -36,27 +36,28 @@ const prop = defineProps(['temId', 'mode', 'temName'])
 const emit = defineEmits(['back', 'edited'])
 const preMod = ref(null)
 const preModInfo = ref(null)
-const modules = ref(null)
+const modules = ref([])
 const code = ref(null)
 const preview = ref(null)
 
-Data.Classes.get().then(value => {
-  modules.value = value
+Store.Classes.list().then(value => {
+  if (value != null) modules.value = value
 })
 
-Data.Templates.getInfo(prop.temId).then(value => {
+Store.Templates.info(prop.temId).then(value => {
   code.value = value
+}).finally(() => {
   watch(code, async n => {
-    await Data.Templates.setInfo(prop.temId, n)
+    await Store.Templates.setInfo(prop.temId, n)
   })
 })
 
 watch(preMod, async n => {
-  if (n == null) return
-  preModInfo.value = await Data.Classes.getInfo(n.id)
+  if (n != null) preModInfo.value = await Store.Classes.info(n.id)
 })
 
 initRender()
+
 function onRefresh() {
   preview.value = render(code.value, {
     clazz: preMod.value,

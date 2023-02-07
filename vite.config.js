@@ -12,7 +12,7 @@ export default defineConfig({
     clearScreen: false,
     // tauri expects a fixed port, fail if that port is not available
     server: {
-        port: 1420,
+        port: 15136,
         strictPort: true,
         watch: {
             ignored: ["**\\*.redb"],

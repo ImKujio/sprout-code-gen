@@ -5,6 +5,7 @@ import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 import App from "./App.vue";
 
 import "./tools/date.js"
+import "./api/store.js"
 
 import 'element-plus/dist/index.css'
 import "./style/comm.scss";

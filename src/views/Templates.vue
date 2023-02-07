@@ -140,7 +140,7 @@ import {computed, reactive, ref, watch} from "vue";
 import SizeWrapper from "../components/SizeWrapper.vue";
 import ContentTitle from "../components/ContentTitle.vue";
 import {Back, Plus, QuestionFilled} from "@element-plus/icons-vue";
-import {Data} from "../api/data.js";
+import {Store} from "../api/store.js";
 import {array2Tree} from "../tools/array.js";
 import TemEditor from "./TemEditor.vue";
 
@@ -192,10 +192,11 @@ watch(treeSel, n => {
   selTem.value = templates.find(t => n.id === t.id)
 })
 
-Data.Templates.get().then(res => {
+Store.Templates.list().then(res => {
   if (res != null) templates.push(...res)
+}).finally(() => {
   watch(templates, async n => {
-    await Data.Templates.set(templates)
+    await Store.Templates.setList(n)
   })
 })
 

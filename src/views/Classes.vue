@@ -83,13 +83,13 @@ import {onActivated, reactive, ref, watch} from "vue";
 import SizeWrapper from "../components/SizeWrapper.vue";
 import ContentTitle from "../components/ContentTitle.vue";
 import {Plus} from "@element-plus/icons-vue";
-import {Data} from "../api/data.js";
+import {Store} from "../api/store.js";
 import ClassProps from "./ClassProps.vue";
 
 const height = ref(0)
 
 const modules = reactive([])
-const columns = ref(null)
+const columns = ref([])
 const dialog = ref(false)
 const form = reactive({})
 const formRef = ref(null)
@@ -100,24 +100,21 @@ function initForm(val) {
   form.id = !val ? null : val.id
   form.name = !val ? null : val.name
   form.comment = !val ? null : val.comment
+  form.update = !val ? null : val.update
   columns.value.forEach(col => {
     form[col.name] = !val ? col.defVal : val[col.name]
   })
-  form.update = !val ? null : val.update
 }
 
-Data.Classes.get().then(res => {
+Store.Classes.list().then(res => {
   if (res != null) modules.push(...res)
-  watch(modules, async n => await Data.Classes.set(n))
-})
-
-Data.ClassColumns.get().then(value => {
-  columns.value = value
+}).finally(() => {
+  watch(modules, async n => await Store.Classes.setList(n))
 })
 
 onActivated(() => {
-  Data.ClassColumns.get().then(value => {
-    columns.value = value
+  Store.ClassColumns.list().then(value => {
+    if (value != null) columns.value = value
   })
 })
 

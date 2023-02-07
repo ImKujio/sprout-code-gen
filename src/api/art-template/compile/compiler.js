@@ -53,8 +53,6 @@ class Compiler {
      */
     constructor(options) {
         let source = options.source;
-        const minimize = options.minimize;
-        const htmlMinifier = options.htmlMinifier;
 
         // 编译选项
         this.options = options;
@@ -99,12 +97,6 @@ class Compiler {
 
         if (options.compileDebug) {
             this.importContext(LINE);
-        }
-
-        if (minimize) {
-            try {
-                source = htmlMinifier(source, options);
-            } catch (error) {}
         }
 
         this.source = source;

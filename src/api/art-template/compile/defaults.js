@@ -4,7 +4,6 @@ import include from "./adapter/include";
 import onerror from "./adapter/onerror";
 import caches from "./adapter/caches";
 import loader from "./adapter/loader";
-import htmlMinifier from "./adapter/html-minifier";
 import resolveFilename from "./adapter/resolve-filename";
 import artRule from './adapter/rule.art';
 import nativeRule from './adapter/rule.native';
@@ -37,7 +36,7 @@ const settings = {
 
     // 是否开启压缩。它会运行 htmlMinifier，将页面 HTML、CSS、CSS 进行压缩输出
     // 如果模板包含没有闭合的 HTML 标签，请不要打开 minimize，否则可能被 htmlMinifier 修复或过滤
-    minimize: true,
+    minimize: false,
 
     // 是否编译调试版
     compileDebug: false,
@@ -47,18 +46,6 @@ const settings = {
 
     // 子模板编译适配器
     include: include,
-
-    // HTML 压缩器。仅在 NodeJS 环境下有效
-    htmlMinifier: htmlMinifier,
-
-    // HTML 压缩器配置。参见 https://github.com/kangax/html-minifier
-    htmlMinifierOptions: {
-        collapseWhitespace: true,
-        minifyCSS: true,
-        minifyJS: true,
-        // 运行时自动合并：rules.map(rule => rule.test)
-        ignoreCustomFragments: []
-    },
 
     // 错误事件。仅在 bail 为 false 时生效
     onerror: onerror,

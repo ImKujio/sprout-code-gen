@@ -1917,16 +1917,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "pyo3-build-config"
-version = "0.17.3"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "28fcd1e73f06ec85bf3280c48c67e731d8290ad3d730f8be9dc07946923005c8"
-dependencies = [
- "once_cell",
- "target-lexicon",
-]
-
-[[package]]
 name = "quick-xml"
 version = "0.23.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2035,16 +2025,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "redb"
-version = "0.11.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2f8b4cc3bef0a4f1ef5953df24395705e4b53d44000fa1169d0a9cdab2d5bd92"
-dependencies = [
- "libc",
- "pyo3-build-config",
-]
-
-[[package]]
 name = "redox_syscall"
 version = "0.2.16"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2127,12 +2107,11 @@ dependencies = [
 name = "ruoyi-gen"
 version = "0.0.0"
 dependencies = [
- "once_cell",
- "redb",
  "serde",
  "serde_json",
  "tauri",
  "tauri-build",
+ "tauri-plugin-store",
  "window-shadows",
 ]
 
@@ -2623,12 +2602,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "target-lexicon"
-version = "0.12.5"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9410d0f6853b1d94f0e519fb95df60f29d2c1eff2d921ffdf01a4c8a3b54f12d"
-
-[[package]]
 name = "tauri"
 version = "1.2.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2735,6 +2708,18 @@ dependencies = [
  "syn",
  "tauri-codegen",
  "tauri-utils",
+]
+
+[[package]]
+name = "tauri-plugin-store"
+version = "0.1.0"
+source = "git+https://github.com/tauri-apps/plugins-workspace?branch=dev#bf1106a0a5e178ce38ecde56751ba037307a7ae8"
+dependencies = [
+ "log",
+ "serde",
+ "serde_json",
+ "tauri",
+ "thiserror",
 ]
 
 [[package]]

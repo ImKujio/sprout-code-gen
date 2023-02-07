@@ -78,7 +78,7 @@ import {reactive, ref, watch} from "vue";
 import SizeWrapper from "../components/SizeWrapper.vue";
 import ContentTitle from "../components/ContentTitle.vue";
 import {Plus} from "@element-plus/icons-vue";
-import {Data} from "../api/data.js";
+import {Store} from "../api/store.js";
 
 const height = ref(0)
 
@@ -101,10 +101,11 @@ function initForm(val) {
   defValOpts.value = !val ? [] : !val.options ? [] : val.options.split(",")
 }
 
-Data.ClassColumns.get().then(res => {
+Store.ClassColumns.list().then(res => {
   if (res != null) columns.push(...res)
+}).finally(() => {
   watch(columns, async n => {
-    await Data.ClassColumns.set(columns)
+    await Store.ClassColumns.setList(n)
   })
 })
 

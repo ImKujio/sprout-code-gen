@@ -46,7 +46,8 @@
           </el-col>
           <el-col v-for="col in columns" :span="12">
             <el-form-item :prop="col.name" :label="col.comment">
-              <el-input v-if="col.type === '输入框'" v-model="form[col.name]" clearable :placeholder="'请输入'+col.comment"/>
+              <el-input v-if="col.type === '输入框'" v-model="form[col.name]" clearable
+                        :placeholder="'请输入'+col.comment"/>
               <el-radio-group v-if="col.type === '单选栏'" v-model="form[col.name]">
                 <el-radio v-for="(item,index) in col.options.split(',')"
                           :label="item"
@@ -80,14 +81,14 @@ import {reactive, ref, watch} from "vue";
 import SizeWrapper from "../components/SizeWrapper.vue";
 import ContentTitle from "../components/ContentTitle.vue";
 import {Plus, Back} from "@element-plus/icons-vue";
-import {Data} from "../api/data.js";
+import {Store} from "../api/store.js";
 
 const height = ref(0)
 
 const prop = defineProps(['clazzId'])
 const emit = defineEmits(['back', 'edited'])
 const modProps = reactive([])
-const columns = ref(null)
+const columns = ref([])
 
 const dialog = ref(false)
 const form = reactive({})
@@ -99,20 +100,22 @@ function initForm(val) {
   form.name = !val ? null : val.name
   form.comment = !val ? null : val.comment
   columns.value.forEach(col => {
+    console.log(col.defVal)
     form[col.name] = !val ? col.defVal : val[col.name]
   })
   form.update = !val ? null : val.update
 }
 
-Data.Classes.getInfo(prop.clazzId).then(res => {
+Store.Classes.info(prop.clazzId).then(res => {
   if (res != null) modProps.push(...res)
+}).finally(() => {
   watch(modProps, async n => {
-    await Data.Classes.setInfo(prop.clazzId, n)
+    await Store.Classes.setInfo(prop.clazzId, n)
   })
 })
 
-Data.PropColumns.get().then(value => {
-  columns.value = value
+Store.PropColumns.list().then(value => {
+  if (value != null) columns.value = value
 })
 
 async function onSubmit() {
