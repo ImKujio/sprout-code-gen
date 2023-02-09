@@ -26,9 +26,11 @@
     </div>
 
     <div class="flex-col-fill" style="margin-left: 8px;">
-      <KeepAlive>
-        <component :is="pages[index]"/>
-      </KeepAlive>
+      <Classes v-if="index === 0"/>
+      <Templates v-if="index === 1"/>
+      <ClassColumns v-if="index === 2"/>
+      <PropColumns v-if="index === 3"/>
+      <Setting v-if="index === 4"/>
     </div>
 
     <div id="window-actions">

@@ -20,6 +20,10 @@ tauri = { version = "1.2", features = ["api-all"] }
 window-shadows = "0.2.1"
 tauri-plugin-store = { git = "https://github.com/tauri-apps/plugins-workspace", branch = "dev" }
 
+[dependencies.tauri-plugin-sql]
+git = "https://github.com/tauri-apps/plugins-workspace"
+branch = "dev"
+features = ["mysql"]
 
 [features]
 # by default Tauri runs in production mode

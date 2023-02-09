@@ -42,3 +42,12 @@ html, body, #app {
 .icon{
   width: 1.4em; height: 1.4em;
 }
+
+.el-card__header {
+  padding: 10px;
+  font-size: 14px;
+}
+
+.el-input-number .el-input__inner {
+  text-align: left;
+}

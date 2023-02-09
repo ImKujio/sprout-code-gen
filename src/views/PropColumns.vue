@@ -26,7 +26,7 @@
       </el-table>
     </size-wrapper>
 
-    <el-dialog v-model="dialog" title="添加类属性列" width="400">
+    <el-dialog v-model="dialog" title="添加类信息列" width="400">
       <el-form ref="formRef" :model="form" label-width="auto">
         <el-form-item prop="name" label="列名" :rules="[
           {required: true, message: '请输入列名', trigger: 'blur'},
@@ -42,18 +42,21 @@
         <el-form-item prop="type" label="表单组件">
           <el-radio-group v-model="form.type">
             <el-radio label="输入框">输入框</el-radio>
-            <el-radio label="单选栏">单选栏</el-radio>
+            <el-radio label="开关">开关</el-radio>
             <el-radio label="选择器">选择器</el-radio>
           </el-radio-group>
         </el-form-item>
-        <el-form-item v-if="form.type !== '输入框'" :rows="2" prop="options" label="选项">
+        <el-form-item v-if="form.type === '选择器'" :rows="2" prop="options" label="选项">
           <el-input type="textarea" v-model="form.options" clearable placeholder="请输入选项" @input="onChange"/>
         </el-form-item>
-        <el-form-item v-if="form.type === '单选栏'" prop="defVal" label="默认值" :rules="[
+        <el-form-item v-if="form.type !== '输入框'" prop="defVal" label="默认值" :rules="[
             {required: true, message: '请选择默认值', trigger: 'blur'}
         ]">
           <el-select style="width: 100%" v-model="form.defVal" placeholder="请选择默认值" :key="defValKey">
+            <el-option v-if="form.type ==='开关'" label="true" value="true" />
+            <el-option v-if="form.type ==='开关'" label="false" value="false" />
             <el-option
+                v-if="form.type === '选择器'"
                 v-for="(item,index) in defValOpts"
                 :key="index"
                 :value="item"
@@ -103,6 +106,7 @@ function initForm(val) {
 
 Store.PropColumns.list().then(res => {
   if (res != null) columns.push(...res)
+}).finally(() => {
   watch(columns, async n => {
     await Store.PropColumns.setList(n)
   })

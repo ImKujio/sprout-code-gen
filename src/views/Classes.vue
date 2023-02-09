@@ -21,7 +21,12 @@
           <el-table-column type="index" align="center" label="序号" width="50"/>
           <el-table-column prop="name" label="类名"/>
           <el-table-column prop="comment" label="注释"/>
-          <el-table-column v-for="(col,index) in columns" :key="index" :prop="col.name" :label="col.comment"/>
+          <el-table-column v-for="(col,index) in columns" :key="index" :label="col.comment">
+            <template #default="scope">
+              <span v-if="col.type === '开关'"><el-icon v-if="scope.row[col.name] === 'true'"><Check/></el-icon></span>
+              <span v-else>{{ scope.row[col.name] }}</span>
+            </template>
+          </el-table-column>
           <el-table-column prop="update" label="更新时间" width="150"/>
         </el-table>
       </size-wrapper>
@@ -48,11 +53,8 @@
               <el-form-item :prop="col.name" :label="col.comment">
                 <el-input v-if="col.type === '输入框'" v-model="form[col.name]" clearable
                           :placeholder="'请输入'+col.comment"/>
-                <el-radio-group v-if="col.type === '单选栏'" v-model="form[col.name]">
-                  <el-radio v-for="(item,index) in col.options.split(',')"
-                            :label="item"
-                            :key="index"/>
-                </el-radio-group>
+                <el-switch v-if="col.type === '开关'" v-model="form[col.name]" active-value="true"
+                           inactive-value="false"/>
                 <el-select v-if="col.type === '选择器'" v-model="form[col.name]" :placeholder="'请选择'+col.comment">
                   <el-option v-for="(item,index) in col.options.split(',')"
                              :label="item"
@@ -79,10 +81,10 @@
 </template>
 
 <script setup>
-import {onActivated, reactive, ref, watch} from "vue";
+import {reactive, ref, watch} from "vue";
 import SizeWrapper from "../components/SizeWrapper.vue";
 import ContentTitle from "../components/ContentTitle.vue";
-import {Plus} from "@element-plus/icons-vue";
+import {Plus, Check} from "@element-plus/icons-vue";
 import {Store} from "../api/store.js";
 import ClassProps from "./ClassProps.vue";
 
@@ -112,10 +114,8 @@ Store.Classes.list().then(res => {
   watch(modules, async n => await Store.Classes.setList(n))
 })
 
-onActivated(() => {
-  Store.ClassColumns.list().then(value => {
-    if (value != null) columns.value = value
-  })
+Store.ClassColumns.list().then(value => {
+  if (value != null) columns.value = value
 })
 
 async function onSubmit() {
