@@ -76,8 +76,11 @@ async fn query(
     let cols = json!(cols);
     let rows = qrst.map(|row| {
         let row = row.unwrap();
-        let row: Vec<JsonValue> = (0..row.len()).map(|i| { get_val(row[i].to_value(), &types[i]) }).collect();
-        json!(row)
+        let mut vals: Vec<JsonValue> = Vec::default();
+        for (i, r) in row.iter().enumerate() {
+            vals.push(get_val(r.to_value(), &types[i]));
+        }
+        json!(vals)
     }).await?;
     let mut map: HashMap<String, JsonValue> = HashMap::default();
     map.insert("cols".to_string(), cols);
