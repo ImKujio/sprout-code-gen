@@ -2998,6 +2998,7 @@ dependencies = [
 name = "ruoyi-gen"
 version = "0.0.0"
 dependencies = [
+ "hex",
  "mysql_async",
  "serde",
  "serde_json",

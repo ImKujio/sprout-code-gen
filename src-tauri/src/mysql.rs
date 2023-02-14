@@ -1,5 +1,6 @@
 use std::collections::HashMap;
 use std::str::{from_utf8, FromStr};
+use hex::ToHex;
 use mysql_async::{Pool, Value};
 use mysql_async::consts::ColumnType;
 use mysql_async::prelude::{Queryable, ToValue};
@@ -71,9 +72,8 @@ async fn query(
     let mut conn = pool.get_conn().await?;
     let mut qrst = conn.query_iter(sql).await?;
     let cols = qrst.columns().ok_or(Err::Other("get columns failed".to_string()))?;
-    let types: Vec<String> = cols.iter().map(|c| { get_type(c.column_type()) }).collect();
-    let cols: Vec<JsonValue> = cols.iter().map(|c| { json!(c.name_str()) }).collect();
-    let cols = json!(cols);
+    let types = cols.iter().map(|c| { get_type(c.column_type()) }).collect::<Vec<String>>();
+    let cols = json!(cols.iter().map(|c| { json!(c.name_str()) }).collect::<Vec<JsonValue>>());
     let rows = qrst.map(|row| {
         let row = row.unwrap();
         let mut vals: Vec<JsonValue> = Vec::default();
@@ -152,11 +152,7 @@ fn get_val(val: Value, ct: &str) -> JsonValue {
 }
 
 fn cvt_blob(bytes: &Vec<u8>) -> JsonValue {
-    let mut s = String::from("0x");
-    for c in bytes.iter() {
-        s.extend(format!("{:02X}", *c).chars())
-    }
-    json!(s)
+    json!(bytes.encode_hex_upper::<String>())
 }
 
 pub fn build<R: Runtime>() -> TauriPlugin<R, Option<PluginConfig>> {
