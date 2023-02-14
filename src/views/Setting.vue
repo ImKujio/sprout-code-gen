@@ -57,6 +57,7 @@ import {Promotion, View, Hide} from "@element-plus/icons-vue";
 import {reactive, ref, watch} from "vue";
 import Database from "tauri-plugin-sql-api";
 import {Store} from "../api/store.js";
+import Mysql from "../api/mysql.js";
 
 const height = ref(0)
 const setting = reactive({
@@ -75,10 +76,9 @@ Store.Setting.all().then(value => {
 
 async function onConnect() {
   const url = `mysql://${setting.mysql.user}:${setting.mysql.psw}@${setting.mysql.addr}/${setting.mysql.db}`
-  console.log(url)
-  const db = await Database.load(url)
-  console.log("has connected")
-  const rst = await db.execute("select 1")
+  const mysql = await Mysql.load(url)
+  console.log("has load")
+  const rst = await mysql.query("SELECT * FROM bed_bed")
   console.log(rst)
 }
 
