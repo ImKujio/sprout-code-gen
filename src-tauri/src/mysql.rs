@@ -126,30 +126,12 @@ fn get_val(val: Value, ct: &str) -> JsonValue {
             year, month, day, hour, minute, second, micros
         )),
         Value::Time(neg, d, h, i, s, 0) => {
-            if neg {
-                json!(format!("-{:03}:{:02}:{:02}", d * 24 + u32::from(h), i, s))
-            } else {
-                json!(format!("{:03}:{:02}:{:02}", d * 24 + u32::from(h), i, s))
-            }
+            let t = format!("{:03}:{:02}:{:02}", d * 24 + u32::from(h), i, s);
+            if neg { json!(String::from("-").push_str(&t)) } else { json!(t) }
         }
         Value::Time(neg, days, hours, minutes, seconds, micros) => {
-            if neg {
-                json!(format!(
-                            "-{:03}:{:02}:{:02}.{:06}",
-                            days * 24 + u32::from(hours),
-                            minutes,
-                            seconds,
-                            micros
-                        ))
-            } else {
-                json!(format!(
-                            "{:03}:{:02}:{:02}.{:06}",
-                            days * 24 + u32::from(hours),
-                            minutes,
-                            seconds,
-                            micros
-                        ))
-            }
+            let t = format!("-{:03}:{:02}:{:02}.{:06}", days * 24 + u32::from(hours), minutes, seconds, micros);
+            if neg { json!(String::from("-").push_str(&t)) } else { json!(t) }
         }
         Value::Bytes(ref bytes) => match ct {
             "Blob" => cvt_blob(bytes),
