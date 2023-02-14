@@ -1,8 +1,8 @@
 use std::collections::HashMap;
-use std::ops::Index;
-use std::str::from_utf8;
-use mysql_async::{Column, Pool, Value};
-use mysql_async::prelude::Queryable;
+use std::str::{from_utf8, FromStr};
+use mysql_async::{Pool, Value};
+use mysql_async::consts::ColumnType;
+use mysql_async::prelude::{Queryable, ToValue};
 use serde::{Serialize, Serializer};
 use serde_json::{json, Number, Value as JsonValue};
 use tauri::plugin::{Builder, TauriPlugin};
@@ -37,45 +37,79 @@ async fn load(
     pools: State<'_, Pools>,
     db: String,
 ) -> Result<()> {
-    let mut pool_map = pools.0.lock().await;
-    if pool_map.get(&db).is_some() {
+    let mut pools = pools.0.lock().await;
+    if pools.get(&db).is_some() {
         return Ok(());
     }
     let pool = Pool::new(db.as_str());
-    pool_map.insert(db.clone(), pool);
+    pools.insert(db.clone(), pool);
     Ok(())
+}
+
+#[command]
+async fn exec(
+    pools: State<'_, Pools>,
+    db: String,
+    sql: String,
+) -> Result<u64> {
+    let pools = pools.0.lock().await;
+    let pool = pools.get(&db).ok_or(Err::Other("pool load failed".to_string()))?;
+    let mut conn = pool.get_conn().await?;
+    conn.exec_drop(sql, {}).await?;
+    let rst = conn.affected_rows();
+    Ok(rst)
 }
 
 #[command]
 async fn query(
     pools: State<'_, Pools>,
     db: String,
-    query: String,
-) -> Result<Vec<HashMap<String, JsonValue>>> {
-    let mut pool_map = pools.0.lock().await;
-    let pool = pool_map.get(&db).ok_or(Err::Other("pool load failed".to_string()))?;
+    sql: String,
+) -> Result<JsonValue> {
+    let pools = pools.0.lock().await;
+    let pool = pools.get(&db).ok_or(Err::Other("pool load failed".to_string()))?;
     let mut conn = pool.get_conn().await?;
-    let mut rst_set = conn.query_iter(query).await?;
-    let mut rst = Vec::default();
-    rst_set.for_each(|mut row| {
-        let mut map = HashMap::default();
-        let cols = row.columns();
+    let mut qrst = conn.query_iter(sql).await?;
+    let cols = qrst.columns().ok_or(Err::Other("get columns failed".to_string()))?;
+    let types: Vec<String> = cols.iter().map(|c| { get_type(c.column_type()) }).collect();
+    let cols: Vec<JsonValue> = cols.iter().map(|c| { json!(c.name_str()) }).collect();
+    let cols = json!(cols);
+    let rows = qrst.map(|row| {
         let row = row.unwrap();
-        for i in 0..cols.len() {
-            let col = match cols.get(i) {
-                None => { i.to_string() }
-                Some(c) => { c.name_str().to_string() }
-            };
-            let val = get_val(row.get(i).unwrap().to_owned());
-            map.insert(col,val);
-        }
-        rst.push(map)
+        let row: Vec<JsonValue> = (0..row.len()).map(|i| { get_val(row[i].to_value(), &types[i]) }).collect();
+        json!(row)
     }).await?;
+    let mut map: HashMap<String, JsonValue> = HashMap::default();
+    map.insert("cols".to_string(), cols);
+    map.insert("rows".to_string(), json!(rows));
     drop(conn);
-    Ok(rst)
+    Ok(json!(map))
 }
 
-fn get_val(val:Value) ->JsonValue{
+fn get_type(ct: ColumnType) -> String {
+    match ct {
+        ColumnType::MYSQL_TYPE_NULL => "Null".to_string(),
+        ColumnType::MYSQL_TYPE_TINY |
+        ColumnType::MYSQL_TYPE_SHORT |
+        ColumnType::MYSQL_TYPE_LONG |
+        ColumnType::MYSQL_TYPE_FLOAT |
+        ColumnType::MYSQL_TYPE_DOUBLE |
+        ColumnType::MYSQL_TYPE_DECIMAL |
+        ColumnType::MYSQL_TYPE_LONGLONG |
+        ColumnType::MYSQL_TYPE_NEWDECIMAL |
+        ColumnType::MYSQL_TYPE_TIMESTAMP |
+        ColumnType::MYSQL_TYPE_TIMESTAMP2 |
+        ColumnType::MYSQL_TYPE_INT24 => "Number".to_string(),
+        ColumnType::MYSQL_TYPE_BIT => "Bool".to_string(),
+        ColumnType::MYSQL_TYPE_TINY_BLOB |
+        ColumnType::MYSQL_TYPE_MEDIUM_BLOB |
+        ColumnType::MYSQL_TYPE_LONG_BLOB |
+        ColumnType::MYSQL_TYPE_BLOB => "Blob".to_string(),
+        _ => "String".to_string()
+    }
+}
+
+fn get_val(val: Value, ct: &str) -> JsonValue {
     match val {
         Value::NULL => JsonValue::Null,
         Value::Int(x) => json!(x),
@@ -117,22 +151,32 @@ fn get_val(val:Value) ->JsonValue{
                         ))
             }
         }
-        Value::Bytes(ref bytes) => match from_utf8(&*bytes) {
-            Ok(string) => json!(string.to_string()),
-            Err(_) => {
-                let mut s = String::from("0x");
-                for c in bytes.iter() {
-                    s.extend(format!("{:02X}", *c).chars())
-                }
-                json!(s)
-            }
-        },
+        Value::Bytes(ref bytes) => match ct {
+            "Blob" => cvt_blob(bytes),
+            _ => match from_utf8(&*bytes) {
+                Ok(v) => match ct {
+                    "Null" => JsonValue::Null,
+                    "Number" => JsonValue::Number(Number::from_str(v).unwrap()),
+                    "Bool" => JsonValue::Bool(v == "1"),
+                    _ => json!(v)
+                },
+                Err(_) => cvt_blob(bytes)
+            },
+        }
     }
+}
+
+fn cvt_blob(bytes: &Vec<u8>) -> JsonValue {
+    let mut s = String::from("0x");
+    for c in bytes.iter() {
+        s.extend(format!("{:02X}", *c).chars())
+    }
+    json!(s)
 }
 
 pub fn build<R: Runtime>() -> TauriPlugin<R, Option<PluginConfig>> {
     Builder::new("mysql")
-        .invoke_handler(tauri::generate_handler![load,query])
+        .invoke_handler(tauri::generate_handler![load,query,exec])
         .setup(|app| {
             tauri::async_runtime::block_on(async move {
                 let pools = Pools::default();

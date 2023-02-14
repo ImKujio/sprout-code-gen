@@ -7,7 +7,6 @@ mod mysql;
 
 use tauri::Manager;
 use window_shadows::set_shadow;
-use crate::mysql::Pools;
 
 fn main() {
     tauri::Builder::default()

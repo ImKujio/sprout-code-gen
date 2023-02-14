@@ -6,7 +6,7 @@
     </content-title>
     <size-wrapper v-model:height="height">
       <el-scrollbar :height="height">
-        <el-card header="MySql" shadow="never">
+        <el-card v-loading="mysqlLoading" header="MySql" shadow="never">
           <el-form label-width="auto">
             <el-row :gutter="40">
               <el-col :span="8">
@@ -38,7 +38,7 @@
                 <el-form-item label=" ">
                   <el-button type="primary" :icon="Promotion" plain style="font-weight: bold" @click="onConnect"
                              :disabled="!setting.mysql.addr || !setting.mysql.db || !setting.mysql.user || !setting.mysql.psw">
-                    连接
+                    测试连接
                   </el-button>
                 </el-form-item>
               </el-col>
@@ -53,13 +53,14 @@
 <script setup>
 import ContentTitle from "../components/ContentTitle.vue";
 import SizeWrapper from "../components/SizeWrapper.vue";
-import {Promotion, View, Hide} from "@element-plus/icons-vue";
+import {Promotion} from "@element-plus/icons-vue";
 import {reactive, ref, watch} from "vue";
-import Database from "tauri-plugin-sql-api";
 import {Store} from "../api/store.js";
-import Mysql from "../api/mysql.js";
+import Mysql, {parseUrl} from "../api/mysql.js";
+import {ElMessage} from "element-plus";
 
 const height = ref(0)
+const mysqlLoading = ref(false)
 const setting = reactive({
   mysql: {}
 })
@@ -74,14 +75,17 @@ Store.Setting.all().then(value => {
   })
 })
 
-async function onConnect() {
-  const url = `mysql://${setting.mysql.user}:${setting.mysql.psw}@${setting.mysql.addr}/${setting.mysql.db}`
-  const mysql = await Mysql.load(url)
-  console.log("has load")
-  const rst = await mysql.query("SELECT * FROM bed_bed")
-  console.log(rst)
+function onConnect() {
+  mysqlLoading.value = true
+  const url = parseUrl(setting.mysql.user,setting.mysql.psw,setting.mysql.addr,setting.mysql.db)
+  Mysql.load(url).then(m => m.query("select * from test"))
+      .then(v => {
+        console.log(v)
+        ElMessage.success("连接成功,Mysql:" + v.rows[0][0])
+      })
+      .catch(e => ElMessage.error("连接失败:" + e))
+      .finally(() => mysqlLoading.value = false)
 }
-
 
 </script>
 
