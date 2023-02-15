@@ -55,8 +55,8 @@
             {required: true, message: '请选择默认值', trigger: 'blur'}
         ]">
           <el-select style="width: 100%" v-model="form.defVal" placeholder="请选择默认值" :key="defValKey">
-            <el-option v-if="form.type ==='开关'" label="true" value="true" />
-            <el-option v-if="form.type ==='开关'" label="false" value="false" />
+            <el-option v-if="form.type ==='开关'" label="true" value="true"/>
+            <el-option v-if="form.type ==='开关'" label="false" value="false"/>
             <el-option
                 v-if="form.type === '选择器'"
                 v-for="(item,index) in defValOpts"
@@ -88,10 +88,10 @@
         ]">
           <el-input v-model="form.comment" clearable placeholder="请输入注释"/>
         </el-form-item>
-        <el-form-item :rows="2" prop="options" label="查询语句">
-          <el-input type="textarea" v-model="form.url" clearable placeholder="请输入查询语句(结果需包含value,label)"  :rules="[
+        <el-form-item :rows="2" prop="sql" label="查询语句" :rules="[
             {required: true, message: '请输入查询语句', trigger: 'blur'}
-        ]"/>
+        ]">
+          <el-input type="textarea" v-model="form.sql" clearable placeholder="请输入查询语句(结果需包含value列和label列)"/>
         </el-form-item>
       </el-form>
       <template #footer>
@@ -113,6 +113,7 @@ import ContentTitle from "../components/ContentTitle.vue";
 import {Plus} from "@element-plus/icons-vue";
 import {Store} from "../api/store.js";
 import Mysql from "../api/mysql.js";
+import {ElMessage} from "element-plus";
 
 const height = ref(0)
 
@@ -175,8 +176,22 @@ function onQuerySubmit() {
   queryFormRef.value.validate(valid => {
     if (!valid) return
     Mysql.def().then(m => m.query(form.sql)).then(r => {
-
-    })
+      if (r.cols.length < 2 || !r.cols.includes("value") || !r.cols.includes("label"))
+        ElMessage.error("校验失败，结果不包含value列和label列")
+      else {
+        ElMessage.success("检验成功")
+        const now = new Date()
+        form.update = now.format("yy-MM-dd hh:mm:ss")
+        if (form.id) {
+          const index = columns.findIndex(c => c.id === form.id)
+          columns.splice(index, 1, Object.assign({}, form))
+        } else {
+          form.id = now.getTime()
+          columns.push(Object.assign({}, form))
+        }
+        queryDialog.value = false
+      }
+    }).catch(e => ElMessage.error("校验失败:" + e))
   })
 }
 
@@ -210,10 +225,10 @@ function onAddQuery() {
 
 
 function onEdit() {
-  if(selCol.value.type === "查询选择器"){
+  if (selCol.value.type === "查询选择器") {
     initQueryForm(selCol.value)
     queryDialog.value = true
-  }else {
+  } else {
     initForm(selCol.value)
     dialog.value = true
   }

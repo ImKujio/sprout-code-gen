@@ -73,7 +73,7 @@ async fn query(
     let mut qrst = conn.query_iter(sql).await?;
     let cols = qrst.columns().ok_or(Err::Other("get columns failed".to_string()))?;
     let types = cols.iter().map(|c| { get_type(c.column_type()) }).collect::<Vec<String>>();
-    let cols = json!(cols.iter().map(|c| { json!(c.name_str()) }).collect::<Vec<JsonValue>>());
+    let cols = json!(cols.iter().map(|c| { c.name_str().into_owned() }).collect::<Vec<String>>());
     let rows = qrst.map(|row| {
         let row = row.unwrap();
         let mut vals: Vec<JsonValue> = Vec::default();

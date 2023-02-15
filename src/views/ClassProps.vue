@@ -10,7 +10,6 @@
       <el-button type="danger" text style="margin-left: 4px" @click="onDel" :disabled="!selMod">删除
       </el-button>
     </content-title>
-
     <size-wrapper v-model:height="height">
       <el-table
           :max-height="height"
@@ -30,7 +29,6 @@
         <el-table-column prop="update" label="更新时间" width="150"/>
       </el-table>
     </size-wrapper>
-
     <el-dialog v-model="dialog" title="添加模块" width="600">
       <el-form ref="formRef" :model="form" label-width="auto">
         <el-row :gutter="10">
@@ -102,10 +100,10 @@ function initForm(val) {
   form.name = !val ? null : val.name
   form.comment = !val ? null : val.comment
   columns.value.forEach(col => {
-    console.log(col.defVal)
     form[col.name] = !val ? col.defVal : val[col.name]
   })
   form.update = !val ? null : val.update
+  console.log(form)
 }
 
 Store.Classes.info(prop.clazzId).then(res => {

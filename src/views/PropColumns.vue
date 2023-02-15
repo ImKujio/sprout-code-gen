@@ -3,6 +3,8 @@
     <content-title>
       <el-button type="primary" :icon="Plus" text style="margin-left: 4px;font-weight: bold" @click="onAdd">新增
       </el-button>
+      <el-button type="primary" :icon="Plus" text style="margin-left: 4px;font-weight: bold" @click="onAddQuery">新增查询
+      </el-button>
       <el-button text style="margin-left: 4px" @click="onEdit" :disabled="!selCol">编辑
       </el-button>
       <el-button type="danger" text style="margin-left: 4px" @click="onDel" :disabled="!selCol">删除
@@ -53,8 +55,8 @@
             {required: true, message: '请选择默认值', trigger: 'blur'}
         ]">
           <el-select style="width: 100%" v-model="form.defVal" placeholder="请选择默认值" :key="defValKey">
-            <el-option v-if="form.type ==='开关'" label="true" value="true" />
-            <el-option v-if="form.type ==='开关'" label="false" value="false" />
+            <el-option v-if="form.type ==='开关'" label="true" value="true"/>
+            <el-option v-if="form.type ==='开关'" label="false" value="false"/>
             <el-option
                 v-if="form.type === '选择器'"
                 v-for="(item,index) in defValOpts"
@@ -73,6 +75,34 @@
       </span>
       </template>
     </el-dialog>
+    <el-dialog v-model="queryDialog" title="添加查询选择器列" width="400">
+      <el-form ref="queryFormRef" :model="form" label-width="auto">
+        <el-form-item prop="name" label="列名" :rules="[
+          {required: true, message: '请输入列名', trigger: 'blur'},
+          {pattern: /^[A-Za-z]{2,20}$/, message: '格式错误,只能是英文'}
+        ]">
+          <el-input v-model="form.name" clearable placeholder="请输入列名"/>
+        </el-form-item>
+        <el-form-item prop="comment" label="注释" :rules="[
+          {required: true, message: '请输入注释', trigger: 'blur'}
+        ]">
+          <el-input v-model="form.comment" clearable placeholder="请输入注释"/>
+        </el-form-item>
+        <el-form-item :rows="2" prop="sql" label="查询语句" :rules="[
+            {required: true, message: '请输入查询语句', trigger: 'blur'}
+        ]">
+          <el-input type="textarea" v-model="form.sql" clearable placeholder="请输入查询语句(结果需包含value列和label列)"/>
+        </el-form-item>
+      </el-form>
+      <template #footer>
+      <span class="dialog-footer">
+        <el-button @click="queryDialog = false">取消</el-button>
+        <el-button type="primary" @click="onQuerySubmit">
+          确定
+        </el-button>
+      </span>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
@@ -82,13 +112,17 @@ import SizeWrapper from "../components/SizeWrapper.vue";
 import ContentTitle from "../components/ContentTitle.vue";
 import {Plus} from "@element-plus/icons-vue";
 import {Store} from "../api/store.js";
+import Mysql from "../api/mysql.js";
+import {ElMessage} from "element-plus";
 
 const height = ref(0)
 
 const columns = reactive([])
 const dialog = ref(false)
+const queryDialog = ref(false)
 const form = reactive({})
 const formRef = ref(null)
+const queryFormRef = ref(null)
 const selCol = ref(null)
 const defValKey = ref(0)
 const defValOpts = ref([])
@@ -102,6 +136,16 @@ function initForm(val) {
   form.options = !val ? null : val.options
   form.update = !val ? null : val.update
   defValOpts.value = !val ? [] : !val.options ? [] : val.options.split(",")
+}
+
+function initQueryForm(val) {
+  form.id = !val ? null : val.id
+  form.name = !val ? null : val.name
+  form.comment = !val ? null : val.comment
+  form.type = "查询选择器"
+  form.defVal = null
+  form.sql = !val ? null : val.sql
+  form.update = !val ? null : val.update
 }
 
 Store.PropColumns.list().then(res => {
@@ -128,6 +172,29 @@ async function onSubmit() {
   })
 }
 
+function onQuerySubmit() {
+  queryFormRef.value.validate(valid => {
+    if (!valid) return
+    Mysql.def().then(m => m.query(form.sql)).then(r => {
+      if (r.cols.length < 2 || !r.cols.includes("value") || !r.cols.includes("label"))
+        ElMessage.error("校验失败，结果不包含value列和label列")
+      else {
+        ElMessage.success("检验成功")
+        const now = new Date()
+        form.update = now.format("yy-MM-dd hh:mm:ss")
+        if (form.id) {
+          const index = columns.findIndex(c => c.id === form.id)
+          columns.splice(index, 1, Object.assign({}, form))
+        } else {
+          form.id = now.getTime()
+          columns.push(Object.assign({}, form))
+        }
+        queryDialog.value = false
+      }
+    }).catch(e => ElMessage.error("校验失败:" + e))
+  })
+}
+
 function onChange(val) {
   if (val == null) {
     defValOpts.value = []
@@ -151,9 +218,20 @@ function onAdd() {
   dialog.value = true
 }
 
+function onAddQuery() {
+  initQueryForm()
+  queryDialog.value = true
+}
+
+
 function onEdit() {
-  initForm(selCol.value)
-  dialog.value = true
+  if (selCol.value.type === "查询选择器") {
+    initQueryForm(selCol.value)
+    queryDialog.value = true
+  } else {
+    initForm(selCol.value)
+    dialog.value = true
+  }
 }
 
 function onDel() {

@@ -78,7 +78,7 @@ Store.Setting.all().then(value => {
 function onConnect() {
   mysqlLoading.value = true
   const url = parseUrl(setting.mysql.user,setting.mysql.psw,setting.mysql.addr,setting.mysql.db)
-  Mysql.load(url).then(m => m.query("select * from test"))
+  Mysql.load(url).then(m => m.query("select version()"))
       .then(v => {
         console.log(v)
         ElMessage.success("连接成功,Mysql:" + v.rows[0][0])

@@ -54,24 +54,12 @@
 </template>
 
 <script setup>
-import {ref} from "vue";
-import {appWindow} from "@tauri-apps/api/window";
-import {Dismiss24Regular, Maximize24Regular, Subtract24Regular} from "@vicons/fluent"
-import {Icon} from "@vicons/utils";
 import Classes from "./views/Classes.vue"
 import Templates from "./views/Templates.vue";
 import ClassColumns from "./views/ClassColumns.vue"
 import PropColumns from "./views/PropColumns.vue";
 import Setting from "./views/Setting.vue";
 
-const index = ref(0)
-const pages = [
-  Classes,
-  Templates,
-  ClassColumns,
-  PropColumns,
-  Setting,
-]
 
 </script>
 
