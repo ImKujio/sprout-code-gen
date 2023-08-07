@@ -143,6 +143,7 @@ import {Back, Plus, QuestionFilled} from "@element-plus/icons-vue";
 import {Store} from "../api/store.js";
 import {array2Tree} from "../tools/array.js";
 import TemEditor from "./TemEditor.vue";
+import {ElMessageBox} from "element-plus";
 
 const height = ref(0)
 
@@ -246,8 +247,9 @@ function onTemEdit() {
   editPage.value = true
 }
 
-function onDel() {
-  templates.splice(templates.indexOf(selTem), 1)
+async function onDel() {
+  await ElMessageBox.confirm(`是否确认删除模板：${selTem.value.name}`,'警告',{type: 'warning'})
+  templates.splice(templates.indexOf(selTem.value), 1)
 }
 </script>
 

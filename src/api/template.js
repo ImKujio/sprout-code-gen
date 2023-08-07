@@ -1,4 +1,5 @@
 import artTemplate from "./art-template/index.js";
+import {CamelCase, camelCase, snake_case} from "./nameCase.js";
 
 function proc(tem) {
     const arr = tem.split("{{line}}")
@@ -16,7 +17,8 @@ function proc(tem) {
 }
 
 function optimize(code) {
-    return code.replace(/ *\n([ \t])*\n/g, "\n")
+    ["a"].includes("")
+    return code.replace(/ *\n([ \t])*\n/g, "\n").replace("{{ }}"," ")
 }
 
 export function render(tem, obj) {
@@ -29,44 +31,15 @@ export function render(tem, obj) {
 
 export function initRender() {
     artTemplate.defaults.imports.snake_case = function (value) {
-        const arr = Array.from(value)
-        for (let i = 0; i < arr.length; i++) {
-            if ("ABCDEFGHIJKLMNOPKRSTUVWXYZ".indexOf(arr[i]) !== -1) {
-                if (i === 0) arr[i] = arr[i].toLowerCase()
-                else arr[i] = "_" + arr[i].toLowerCase()
-            }
-        }
-        return arr.join("")
+        return snake_case(value)
     }
 
     artTemplate.defaults.imports.CamelCase = function (value) {
-        const arr = Array.from(value)
-        arr[0] = arr[0].toUpperCase()
-        if (arr.length === 1) return arr.join("")
-        for (let i = 1; i < arr.length; i++) {
-            if (arr[i - 1] === "_") {
-                arr[i - 1] = ""
-                arr[i] = arr[i].toUpperCase()
-            }
-        }
-        return arr.join("")
+        return CamelCase(value)
     }
 
     artTemplate.defaults.imports.camelCase = function (value) {
-        const arr = Array.from(value)
-        arr[0] = arr[0].toLowerCase()
-        if (arr.length === 1) return arr.join("")
-        for (let i = 1; i < arr.length; i++) {
-            if (arr[i - 1] === "_") {
-                arr[i - 1] = ""
-                arr[i] = arr[i].toUpperCase()
-            }
-        }
-        return arr.join("")
+        return camelCase(value)
     }
 
-    artTemplate.defaults.imports.isIn = function (value) {
-        return true
-        // return array.split(",").indexOf(value) !== -1
-    }
 }

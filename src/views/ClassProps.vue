@@ -82,6 +82,7 @@ import SizeWrapper from "../components/SizeWrapper.vue";
 import ContentTitle from "../components/ContentTitle.vue";
 import {Plus, Back,Check} from "@element-plus/icons-vue";
 import {Store} from "../api/store.js";
+import {ElMessageBox} from "element-plus";
 
 const height = ref(0)
 
@@ -149,8 +150,9 @@ function onEdit() {
   dialog.value = true
 }
 
-function onDel() {
-  modProps.splice(modProps.indexOf(selMod), 1)
+async function onDel() {
+  await ElMessageBox.confirm(`是否确认删除类信息：${selMod.value.name}`,'警告',{type: 'warning'})
+  modProps.splice(modProps.indexOf(selMod.value), 1)
   emit('edited', prop.modId)
 }
 </script>

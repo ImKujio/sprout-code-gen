@@ -113,7 +113,7 @@ import ContentTitle from "../components/ContentTitle.vue";
 import {Plus} from "@element-plus/icons-vue";
 import {Store} from "../api/store.js";
 import Mysql from "../api/mysql.js";
-import {ElMessage} from "element-plus";
+import {ElMessage, ElMessageBox} from "element-plus";
 
 const height = ref(0)
 
@@ -234,8 +234,9 @@ function onEdit() {
   }
 }
 
-function onDel() {
-  columns.splice(columns.indexOf(selCol), 1)
+async function onDel() {
+  await ElMessageBox.confirm(`是否确认删除类属性列：${selMod.value.name}`,'警告',{type: 'warning'})
+  columns.splice(columns.indexOf(selCol.value), 1)
 }
 </script>
 

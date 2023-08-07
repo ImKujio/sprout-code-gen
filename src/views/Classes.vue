@@ -1,12 +1,14 @@
 <template>
   <div class="flex-col-fill">
-    <div v-if="!editPage" class="flex-col-fill">
+    <div v-if="page === 0" class="flex-col-fill">
       <content-title>
         <el-button type="primary" :icon="Plus" text style="margin-left: 4px;font-weight: bold" @click="onAdd">新增
         </el-button>
         <el-button text style="margin-left: 4px" @click="onEdit" :disabled="!selMod">编辑
         </el-button>
         <el-button text style="margin-left: 4px" @click="onEditProp" :disabled="!selMod">编辑属性
+        </el-button>
+        <el-button type="success" text style="margin-left: 4px" @click="onGenCode" :disabled="!selMod">生成代码
         </el-button>
         <el-button type="danger" text style="margin-left: 4px" @click="onDel" :disabled="!selMod">删除
         </el-button>
@@ -75,7 +77,8 @@
         </template>
       </el-dialog>
     </div>
-    <class-props v-else :clazz-id="selMod.id" @edited="onPropEdit" @back="selMod = null;editPage = false"/>
+    <class-props v-if="page === 1" :clazz-id="selMod.id" @edited="onPropEdit" @back="selMod = null;page = 0"/>
+    <class-code v-if="page === 2" :clazz="selMod" @back="selMod = null;page = 0"/>
   </div>
 
 </template>
@@ -87,6 +90,8 @@ import ContentTitle from "../components/ContentTitle.vue";
 import {Plus, Check} from "@element-plus/icons-vue";
 import {Store} from "../api/store.js";
 import ClassProps from "./ClassProps.vue";
+import {ElMessage, ElMessageBox} from "element-plus";
+import ClassCode from "./ClassCode.vue";
 
 const height = ref(0)
 
@@ -96,7 +101,7 @@ const dialog = ref(false)
 const form = reactive({})
 const formRef = ref(null)
 const selMod = ref(null)
-const editPage = ref(false)
+const page = ref(0)
 
 function initForm(val) {
   form.id = !val ? null : val.id
@@ -145,15 +150,20 @@ function onEdit() {
 }
 
 function onEditProp() {
-  editPage.value = true
+  page.value = 1
 }
 
 function onPropEdit(id) {
   modules.find(m => m.id === id).update = new Date().format("yy-MM-dd hh:mm:ss")
 }
 
-function onDel() {
-  modules.splice(modules.indexOf(selMod), 1)
+function onGenCode(){
+  page.value = 2
+}
+
+async function onDel() {
+  await ElMessageBox.confirm(`是否确认删除类：${selMod.value.name}`,'警告',{type: 'warning'})
+  modules.splice(modules.indexOf(selMod.value), 1)
 }
 </script>
 

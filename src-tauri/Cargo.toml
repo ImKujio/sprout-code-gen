@@ -1,8 +1,8 @@
 [package]
 name = "ruoyi-gen"
-version = "0.0.0"
-description = "A Tauri App"
-authors = ["you"]
+version = "1.0.2"
+description = "Kujio universal code generator"
+authors = ["Kujio"]
 license = ""
 repository = ""
 edition = "2021"
