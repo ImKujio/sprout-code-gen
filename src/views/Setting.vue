@@ -45,6 +45,11 @@
             </el-row>
           </el-form>
         </el-card>
+        <el-card v-loading="mysqlLoading" header="数据" shadow="never">
+          <el-button type="primary" :icon="FolderOpened" plain style="font-weight: bold" @click="onOpenDataDir">
+            数据文件夹
+          </el-button>
+        </el-card>
       </el-scrollbar>
     </size-wrapper>
   </div>
@@ -53,17 +58,27 @@
 <script setup>
 import ContentTitle from "../components/ContentTitle.vue";
 import SizeWrapper from "../components/SizeWrapper.vue";
-import {Promotion} from "@element-plus/icons-vue";
+import {Promotion, FolderOpened} from "@element-plus/icons-vue";
 import {reactive, ref, watch} from "vue";
 import {Store} from "../api/store.js";
 import Mysql, {parseUrl} from "../api/mysql.js";
 import {ElMessage} from "element-plus";
+import { Command } from '@tauri-apps/api/shell'
+import {dataDir} from '@tauri-apps/api/path';
 
 const height = ref(0)
 const mysqlLoading = ref(false)
 const setting = reactive({
   mysql: {}
 })
+
+async function onOpenDataDir() {
+  const dir = await dataDir()
+  console.log(dir)
+  const openCmd = new Command("showFile",[dir+'me.kujio.ruoyigen'])
+  await openCmd.execute()
+  // await open("\\" + dir, "explorer")
+}
 
 Store.Setting.all().then(value => {
   if (value) for (let f in value) {
@@ -77,7 +92,7 @@ Store.Setting.all().then(value => {
 
 function onConnect() {
   mysqlLoading.value = true
-  const url = parseUrl(setting.mysql.user,setting.mysql.psw,setting.mysql.addr,setting.mysql.db)
+  const url = parseUrl(setting.mysql.user, setting.mysql.psw, setting.mysql.addr, setting.mysql.db)
   Mysql.load(url).then(m => m.query("select version()"))
       .then(v => {
         console.log(v)

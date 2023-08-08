@@ -80,7 +80,7 @@
 import {reactive, ref, watch} from "vue";
 import SizeWrapper from "../components/SizeWrapper.vue";
 import ContentTitle from "../components/ContentTitle.vue";
-import {Plus, Back,Check} from "@element-plus/icons-vue";
+import {Plus, Back, Check} from "@element-plus/icons-vue";
 import {Store} from "../api/store.js";
 import {ElMessageBox} from "element-plus";
 
@@ -92,19 +92,16 @@ const modProps = reactive([])
 const columns = ref([])
 
 const dialog = ref(false)
-const form = reactive({})
+const form = ref({})
 const formRef = ref(null)
 const selMod = ref(null)
 
 function initForm(val) {
-  form.id = !val ? null : val.id
-  form.name = !val ? null : val.name
-  form.comment = !val ? null : val.comment
+  const data = {}
   columns.value.forEach(col => {
-    form[col.name] = !val ? col.defVal : val[col.name]
+    data[col.name] = col.defVal
   })
-  form.update = !val ? null : val.update
-  console.log(form)
+  form.value = !val ? data : Object.assign(data, val)
 }
 
 Store.Classes.info(prop.clazzId).then(res => {
@@ -123,13 +120,18 @@ async function onSubmit() {
   await formRef.value.validate(valid => {
     if (!valid) return
     const now = new Date()
-    form.update = now.format("yy-MM-dd hh:mm:ss")
-    if (form.id) {
-      const index = modProps.findIndex(m => m.id = form.id)
-      modProps.splice(index, 1, Object.assign({}, form))
+    form.value.update = now.format("yy-MM-dd hh:mm:ss")
+    if (!!form.value.id) {
+      const index = modProps.findIndex(m => m.id === form.value.id)
+      if (index >= 0) {
+        modProps.splice(index, 1, form.value)
+      } else {
+        form.value.id = now.getTime()
+        modProps.push(form.value)
+      }
     } else {
-      form.id = now.getTime()
-      modProps.push(Object.assign({}, form))
+      form.value.id = now.getTime()
+      modProps.push(form.value)
     }
     emit('edited', prop.clazzId)
     dialog.value = false
@@ -151,7 +153,6 @@ function onEdit() {
 }
 
 async function onDel() {
-  await ElMessageBox.confirm(`是否确认删除类信息：${selMod.value.name}`,'警告',{type: 'warning'})
   modProps.splice(modProps.indexOf(selMod.value), 1)
   emit('edited', prop.modId)
 }

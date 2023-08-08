@@ -8,12 +8,12 @@
   },
   "package": {
     "productName": "ruoyi-gen",
-    "version": "1.0.2"
+    "version": "1.0.3"
   },
   "tauri": {
     "allowlist": {
       "all": true,
-      "fs" :{
+      "fs": {
         "all": true,
         "readFile": true,
         "writeFile": true,
@@ -23,11 +23,20 @@
         "removeDir": true,
         "removeFile": true,
         "renameFile": true,
-        "scope": ["*"]
+        "scope": [
+          "*"
+        ]
       },
       "shell": {
         "all": false,
-        "open": true
+        "open": true,
+        "scope": [
+          {
+            "name": "showFile",
+            "cmd": "explorer",
+            "args": true
+          }
+        ]
       }
     },
     "bundle": {
@@ -54,7 +63,9 @@
         "providerShortName": null,
         "signingIdentity": null
       },
-      "resources": ["data.redb"],
+      "resources": [
+        "data.redb"
+      ],
       "shortDescription": "",
       "targets": "all",
       "windows": {

@@ -34,3 +34,14 @@ export function camelCase(value){
     }
     return arr.join("")
 }
+
+export function kebabCase(value){
+    const arr = Array.from(value)
+    for (let i = 0; i < arr.length; i++) {
+        if ("ABCDEFGHIJKLMNOPKRSTUVWXYZ".indexOf(arr[i]) !== -1) {
+            if (i === 0) arr[i] = arr[i].toLowerCase()
+            else arr[i] = "-" + arr[i].toLowerCase()
+        }
+    }
+    return arr.join("")
+}

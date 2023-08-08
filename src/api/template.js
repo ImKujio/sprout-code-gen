@@ -1,5 +1,5 @@
 import artTemplate from "./art-template/index.js";
-import {CamelCase, camelCase, snake_case} from "./nameCase.js";
+import {CamelCase, camelCase, kebabCase, snake_case} from "./nameCase.js";
 
 function proc(tem) {
     const arr = tem.split("{{line}}")
@@ -40,6 +40,10 @@ export function initRender() {
 
     artTemplate.defaults.imports.camelCase = function (value) {
         return camelCase(value)
+    }
+
+    artTemplate.defaults.imports.kebabCase = function (value) {
+        return kebabCase(value)
     }
 
 }

@@ -38,6 +38,10 @@
           <pre><code>{{ doc.nameCase }}</code></pre>
           <h4>行折叠</h4>
           <pre><code>{{ doc.inline }}</code></pre>
+          <h4>类信息</h4>
+          <pre><code>{{ !!preMod ? preMod : '请选择预览模块后查看' }}</code></pre>
+          <h4>字段信息</h4>
+          <pre><code>{{ !!preModInfo ? preModInfo : '请选择预览模块后查看' }}</code></pre>
         </section>
       </el-scrollbar>
     </el-dialog>
@@ -104,6 +108,19 @@ function onBack() {
   margin-left: 0 !important;
   background-color: transparent !important;
   cursor: default !important;
+}
+
+section {
+  pre {
+    padding: 8px;
+    background: #f5f5f5;
+    border-radius: 4px;
+
+    code {
+      user-select: text !important;
+    }
+  }
+
 }
 
 </style>

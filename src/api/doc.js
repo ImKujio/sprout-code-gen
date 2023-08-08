@@ -14,6 +14,7 @@ export default {
     variable : '{{set temp = data.sub.content}}',
     nameCase : '大驼峰: {{name | CamelCase}}\n' +
         '小驼峰：{{name | camelCase}}\n' +
-        '蛇形：{{name | snake_case}}',
+        '蛇形：{{name | snake_case}}\n' +
+        '串形：{{name | kebabCase}}',
     inline : '{{line}}{{/line}}'
 }

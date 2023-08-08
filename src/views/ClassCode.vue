@@ -35,7 +35,7 @@ import {computed, onMounted, ref, watch} from "vue";
 import {Store} from "../api/store.js";
 import {initRender, render} from "../api/template.js";
 import SizeWrapper from "../components/SizeWrapper.vue";
-import {camelCase, CamelCase, snake_case} from "../api/nameCase.js";
+import {camelCase, CamelCase, kebabCase, snake_case} from "../api/nameCase.js";
 import {writeText} from "@tauri-apps/api/clipboard";
 import {ElMessage} from "element-plus";
 
@@ -83,6 +83,7 @@ const fileName = computed(() => {
   name = name.replace("{ClassName}",CamelCase(prop.clazz.name))
   name = name.replace("{className}",camelCase(prop.clazz.name))
   name = name.replace("{class_name}",snake_case(prop.clazz.name))
+  name = name.replace("{class-name}",kebabCase(prop.clazz.name))
   return name
 })
 

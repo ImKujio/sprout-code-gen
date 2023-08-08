@@ -91,7 +91,7 @@
              ]">
                 <template #label>
                   <span>
-                    <el-tooltip content="文件名可插入类名,大驼峰:{ClassName},小驼峰:{className},蛇形:{class_name}"
+                    <el-tooltip content="文件名可插入类名,大驼峰:{ClassName},小驼峰:{className},蛇形:{class_name},串形:{class-name}"
                                 placement="top">
                     <icon style="vertical-align: middle">
                       <el-icon>
@@ -213,7 +213,12 @@ async function onSubmit() {
     if (form.group === 1) form.language = null
     if (form.id) {
       const index = templates.findIndex(t => t.id === form.id)
-      templates.splice(index, 1, Object.assign({}, form))
+      if (index >= 0) {
+        templates.splice(index, 1, Object.assign({}, form))
+      } else {
+        form.id = now.getTime()
+        templates.push(Object.assign({}, form))
+      }
     } else {
       form.id = now.getTime()
       templates.push(Object.assign({}, form))
@@ -248,8 +253,9 @@ function onTemEdit() {
 }
 
 async function onDel() {
-  await ElMessageBox.confirm(`是否确认删除模板：${selTem.value.name}`,'警告',{type: 'warning'})
+  await ElMessageBox.confirm(`是否确认删除模板：${selTem.value.name}`, '警告', {type: 'warning'})
   templates.splice(templates.indexOf(selTem.value), 1)
+  await Store.Templates.delInfo(selTem.value.id)
 }
 </script>
 

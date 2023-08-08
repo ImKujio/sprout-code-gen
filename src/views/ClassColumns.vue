@@ -91,7 +91,8 @@
         <el-form-item :rows="2" prop="sql" label="查询语句" :rules="[
             {required: true, message: '请输入查询语句', trigger: 'blur'}
         ]">
-          <el-input type="textarea" v-model="form.sql" clearable placeholder="请输入查询语句(结果需包含value列和label列)"/>
+          <el-input type="textarea" v-model="form.sql" clearable
+                    placeholder="请输入查询语句(结果需包含value列和label列)"/>
         </el-form-item>
       </el-form>
       <template #footer>
@@ -113,7 +114,7 @@ import ContentTitle from "../components/ContentTitle.vue";
 import {Plus} from "@element-plus/icons-vue";
 import {Store} from "../api/store.js";
 import Mysql from "../api/mysql.js";
-import {ElMessage} from "element-plus";
+import {ElMessage, ElMessageBox} from "element-plus";
 
 const height = ref(0)
 
@@ -163,7 +164,12 @@ async function onSubmit() {
     form.update = now.format("yy-MM-dd hh:mm:ss")
     if (form.id) {
       const index = columns.findIndex(c => c.id === form.id)
-      columns.splice(index, 1, Object.assign({}, form))
+      if (index >= 0) {
+        columns.splice(index, 1, Object.assign({}, form))
+      }else {
+        form.id = now.getTime()
+        columns.push(Object.assign({}, form))
+      }
     } else {
       form.id = now.getTime()
       columns.push(Object.assign({}, form))
@@ -234,8 +240,9 @@ function onEdit() {
   }
 }
 
-function onDel() {
-  columns.splice(columns.indexOf(selCol), 1)
+async function onDel() {
+  await ElMessageBox.confirm(`是否确认删除类信息：${selCol.value.name}`, '警告', {type: 'warning'})
+  columns.splice(columns.indexOf(selCol.value), 1)
 }
 </script>
 

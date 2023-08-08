@@ -98,19 +98,17 @@ const height = ref(0)
 const modules = reactive([])
 const columns = ref([])
 const dialog = ref(false)
-const form = reactive({})
+const form = ref({})
 const formRef = ref(null)
 const selMod = ref(null)
 const page = ref(0)
 
 function initForm(val) {
-  form.id = !val ? null : val.id
-  form.name = !val ? null : val.name
-  form.comment = !val ? null : val.comment
-  form.update = !val ? null : val.update
+  const data = {}
   columns.value.forEach(col => {
-    form[col.name] = !val ? col.defVal : val[col.name]
+    data[col.name] = col.defVal
   })
+  form.value = !val ? data : Object.assign(data, val)
 }
 
 Store.Classes.list().then(res => {
@@ -127,13 +125,18 @@ async function onSubmit() {
   await formRef.value.validate(valid => {
     if (!valid) return
     const now = new Date()
-    form.update = now.format("yy-MM-dd hh:mm:ss")
-    if (form.id) {
-      const index = modules.findIndex(m => m.id = form.id)
-      modules.splice(index, 1, Object.assign({}, form))
+    form.value.update = now.format("yy-MM-dd hh:mm:ss")
+    if (!!form.value.id) {
+      const index = modules.findIndex(m => m.id === form.value.id)
+      if (index >= 0) {
+        modules.splice(index, 1, form.value)
+      } else {
+        form.value.id = now.getTime()
+        modules.push(Object.assign({}, form.value))
+      }
     } else {
-      form.id = now.getTime()
-      modules.push(Object.assign({}, form))
+      form.value.id = now.getTime()
+      modules.push(form.value)
     }
     dialog.value = false
   })
@@ -157,13 +160,14 @@ function onPropEdit(id) {
   modules.find(m => m.id === id).update = new Date().format("yy-MM-dd hh:mm:ss")
 }
 
-function onGenCode(){
+function onGenCode() {
   page.value = 2
 }
 
 async function onDel() {
-  await ElMessageBox.confirm(`是否确认删除类：${selMod.value.name}`,'警告',{type: 'warning'})
+  await ElMessageBox.confirm(`是否确认删除类：${selMod.value.name}`, '警告', {type: 'warning'})
   modules.splice(modules.indexOf(selMod.value), 1)
+  await Store.Classes.delInfo(selMod.value.id)
 }
 </script>
 

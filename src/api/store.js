@@ -14,6 +14,10 @@ KVStore.prototype.setInfo = function (id, val) {
     return this.set("info/" + id, val)
 }
 
+KVStore.prototype.delInfo = function (id){
+    return this.delete("info/" + id)
+}
+
 KVStore.prototype.all = function () {
     return this.get("all")
 }
@@ -26,5 +30,12 @@ export const Store = {
     Templates: new KVStore("templates.json"),
     PropColumns: new KVStore("propcolumns.json"),
     ClassColumns: new KVStore("classcolumns.json"),
-    Setting: new KVStore("setting.json")
+    Setting: new KVStore("setting.json"),
+    async save(){
+        await this.Classes.save()
+        await this.Templates.save()
+        await this.PropColumns.save()
+        await this.ClassColumns.save()
+        await this.Setting.save()
+    }
 }

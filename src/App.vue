@@ -54,7 +54,7 @@
 </template>
 
 <script setup>
-import {ref} from "vue";
+import {onMounted, onUnmounted, ref} from "vue";
 import {appWindow} from "@tauri-apps/api/window";
 import {Dismiss24Regular, Maximize24Regular, Subtract24Regular} from "@vicons/fluent"
 import {Icon} from "@vicons/utils";
@@ -63,6 +63,8 @@ import Templates from "./views/Templates.vue";
 import ClassColumns from "./views/ClassColumns.vue"
 import PropColumns from "./views/PropColumns.vue";
 import Setting from "./views/Setting.vue";
+import {listen} from '@tauri-apps/api/event';
+import {Store} from "./api/store.js";
 
 const index = ref(0)
 const pages = [
@@ -72,6 +74,20 @@ const pages = [
   PropColumns,
   Setting,
 ]
+
+let unListen = null
+
+onMounted(() => {
+  listen("tauri://blur", event => {
+    console.log("tauri://blur",event)
+    Store.save().then()
+  }).then(value => unListen = value)
+})
+
+onUnmounted(() => {
+  if (unListen == null) return
+  unListen()
+})
 
 </script>
 
