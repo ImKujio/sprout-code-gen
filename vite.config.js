@@ -4,7 +4,7 @@ import vue from "@vitejs/plugin-vue";
 // https://vitejs.dev/config/
 export default defineConfig({
     plugins: [
-        vue()
+        vue(),
     ],
 
     // Vite options tailored for Tauri development and only applied in `tauri dev` or `tauri build`
@@ -28,5 +28,16 @@ export default defineConfig({
         minify: !process.env.TAURI_DEBUG ? "esbuild" : false,
         // produce sourcemaps for debug builds
         sourcemap: !!process.env.TAURI_DEBUG,
+    },
+    optimizeDeps: {
+        include: [
+            'vue',
+            'tauri-plugin-store-api',
+            'element-plus',
+            '@element-plus/icons-vue',
+            '@tauri-apps/api',
+            "codemirror-editor-vue3",
+            "is-keyword-js"
+        ],
     },
 });

@@ -19,9 +19,10 @@
             :data="modules"
             highlight-current-row
             @current-change="m => selMod = m"
+            :default-sort="{ prop: 'update', order: 'descending' }"
         >
           <el-table-column type="index" align="center" label="序号" width="50"/>
-          <el-table-column prop="name" label="类名"/>
+          <el-table-column prop="name" label="类名" sortable/>
           <el-table-column prop="comment" label="注释"/>
           <el-table-column v-for="(col,index) in columns" :key="index" :label="col.comment">
             <template #default="scope">
@@ -29,11 +30,11 @@
               <span v-else>{{ scope.row[col.name] }}</span>
             </template>
           </el-table-column>
-          <el-table-column prop="update" label="更新时间" width="150"/>
+          <el-table-column prop="update" label="更新时间" sortable width="150"/>
         </el-table>
       </size-wrapper>
 
-      <el-dialog v-model="dialog" title="添加模块" width="600">
+      <el-dialog v-model="dialog" title="添加模块" width="600" draggable>
         <el-form ref="formRef" :model="form" label-width="auto">
           <el-row :gutter="10">
             <el-col :span="12">

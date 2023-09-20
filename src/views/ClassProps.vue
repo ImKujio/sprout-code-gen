@@ -29,7 +29,7 @@
         <el-table-column prop="update" label="更新时间" width="150"/>
       </el-table>
     </size-wrapper>
-    <el-dialog v-model="dialog" title="添加模块" width="600">
+    <el-dialog v-model="dialog" title="添加模块" width="600" draggable>
       <el-form ref="formRef" :model="form" label-width="auto">
         <el-row :gutter="10">
           <el-col :span="12">

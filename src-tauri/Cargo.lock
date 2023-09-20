@@ -2995,23 +2995,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "ruoyi-gen"
-version = "1.0.2"
-dependencies = [
- "hex",
- "mysql_async",
- "serde",
- "serde_json",
- "tauri",
- "tauri-build",
- "tauri-plugin-sql",
- "tauri-plugin-store",
- "thiserror",
- "tokio",
- "window-shadows",
-]
-
-[[package]]
 name = "rust_decimal"
 version = "1.28.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -3443,6 +3426,23 @@ checksum = "44d01ac02a6ccf3e07db148d2be087da624fea0221a16152ed01f0496a6b0a27"
 dependencies = [
  "base64ct",
  "der",
+]
+
+[[package]]
+name = "sprout-gen"
+version = "1.0.4"
+dependencies = [
+ "hex",
+ "mysql_async",
+ "serde",
+ "serde_json",
+ "tauri",
+ "tauri-build",
+ "tauri-plugin-sql",
+ "tauri-plugin-store",
+ "thiserror",
+ "tokio",
+ "window-shadows",
 ]
 
 [[package]]

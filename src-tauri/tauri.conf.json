@@ -7,8 +7,8 @@
     "withGlobalTauri": true
   },
   "package": {
-    "productName": "ruoyi-gen",
-    "version": "1.0.3"
+    "productName": "sprout-gen",
+    "version": "1.0.4"
   },
   "tauri": {
     "allowlist": {
@@ -54,7 +54,7 @@
         "icons/icon.icns",
         "icons/icon.ico"
       ],
-      "identifier": "me.kujio.ruoyigen",
+      "identifier": "me.kujio.sprout.gen",
       "longDescription": "",
       "macOS": {
         "entitlements": null,
@@ -86,7 +86,7 @@
         "fullscreen": false,
         "height": 600,
         "resizable": true,
-        "title": "ruoyi-gen",
+        "title": "sprout-gen",
         "width": 960,
         "minWidth": 960,
         "minHeight": 600,
