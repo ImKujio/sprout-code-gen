@@ -75,7 +75,7 @@ const setting = reactive({
 async function onOpenDataDir() {
   const dir = await dataDir()
   console.log(dir)
-  const openCmd = new Command("showFile",[dir+'me.kujio.ruoyigen'])
+  const openCmd = new Command("showFile",[dir+'me.kujio.sprout.gen'])
   await openCmd.execute()
   // await open("\\" + dir, "explorer")
 }
